@@ -473,7 +473,7 @@ async def purge(ctx, num):
             print(f"cmdPurge: Permission denied ({ctx.message.author}).")
             await ctx.send("You do not have permission to use this command.")
 
-@bot.command(brief="Creates an invite to this server.", description="Creates an invite to this server.")
+@bot.command(brief="Creates an invite to this server.", description="Creates an invite to this server and returns it.")
 async def invite(ctx):
     link = await ctx.channel.create_invite(max_age = 300)
     await ctx.send(link)
