@@ -164,7 +164,6 @@ async def done(ctx, title):
         print(f"cmdDone: Permission denied ({ctx.message.author}).")
 
 spamCount = 0
-
 @bot.event
 async def on_message(message):
     try:
@@ -477,6 +476,28 @@ async def purge(ctx, num):
 async def invite(ctx):
     link = await ctx.channel.create_invite(max_age = 300)
     await ctx.send(link)
+
+@bot.command(brief="Kicks mentioned user after a specified amount of time.", description="Kicks mentioned user after a specific amount of time (hours).")
+async def expire(ctx, member:discord.Member, time, unit):
+    if ctx.message.author.guild_permissions.kick_members:
+        if str(unit) == "minute" or str(unit) == "minutes" or str(unit) == "min" or str(unit) == "mins":
+            time = round(float(time) / 60, 2)
+        print(f"cmdExpire: Permission given ({ctx.message.author}). Time = {time} hour(s). Member = {member.display_name}.")
+        await kickTimer(ctx, member, time)
+    else:
+        await ctx.send("You do not have permission to use this command.")
+
+async def kickTimer(ctx, member:discord.Member, time):
+    print("kickTimer called.")
+    await ctx.send(f"Member {member.display_name} will be kicked after {time} hour(s).")
+    time = time * 3600
+    await asyncio.sleep(time)
+    try:
+        await member.kick()
+        print(f"Member {member.display_name} was kicked after timer expire.")
+        await ctx.send(f"Member {member.display_name} was kicked after timer expire.")
+    except discord.Forbidden:
+        print("Member kick failed after timer expire.")
 
 HelpCommand = commands.DefaultHelpCommand(
     no_category = "Commands"
