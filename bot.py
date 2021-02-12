@@ -478,7 +478,7 @@ async def invite(ctx):
     await ctx.send(link)
 
 @bot.command(brief="Kicks mentioned user after a specified amount of time.", description="Kicks mentioned user after a specific amount of time (hours).")
-async def expire(ctx, member:discord.Member, time, unit):
+async def timekick(ctx, member:discord.Member, time, unit):
     if ctx.message.author.guild_permissions.kick_members:
         if str(unit) == "minute" or str(unit) == "minutes" or str(unit) == "min" or str(unit) == "mins":
             time = round(float(time) / 60, 2)
@@ -498,6 +498,28 @@ async def kickTimer(ctx, member:discord.Member, time):
         await ctx.send(f"Member {member.display_name} was kicked after timer expire.")
     except discord.Forbidden:
         print("Member kick failed after timer expire.")
+
+@bot.command(brief="Kicks mentioned user after they leave vc.", description="Kicks mentioned user after they leave vc.")
+async def vckick(ctx, member:discord.Member):
+    if ctx.message.author.guild_permissions.kick_members:
+        print(f"cmdVckick: Permission given ({ctx.message.author}). Member = {member.display_name}.")
+        if member.voice == None:
+            await ctx.send(f"Member {member.display_name} is not in a vc.")
+        else:
+            await ctx.send(f"Member {member.display_name} will be kicked after they leave vc.")
+            await vcKicker(ctx, member)
+            
+    else:
+        await ctx.send("You do not have permission to use this command.")
+
+async def vcKicker(ctx, member:discord.Member):
+    while True:
+        if member.voice == None:
+            await member.kick()
+            break;
+        else:
+            await asyncio.sleep(60)
+    await ctx.send(f"Member {member.display_name} was kicked after timer expire.")
 
 HelpCommand = commands.DefaultHelpCommand(
     no_category = "Commands"
