@@ -519,7 +519,7 @@ async def vcKicker(ctx, member:discord.Member):
             break;
         else:
             await asyncio.sleep(60)
-    await ctx.send(f"Member {member.display_name} was kicked after timer expire.")
+    await ctx.send(f"Member {member.display_name} was kicked after leaving vc.")
 
 HelpCommand = commands.DefaultHelpCommand(
     no_category = "Commands"
