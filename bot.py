@@ -27,7 +27,6 @@ bot = commands.Bot(command_prefix="$")
 HelpCommand = commands.DefaultHelpCommand(
     no_category = "Commands"
 )
-
 bot.help_command = HelpCommand
 
 @bot.event
@@ -173,7 +172,6 @@ async def ask(ctx, *args):
     else:
         try:
             result = res['pod'][1]['subpod']['img']['@src']
-            #title = res['pod'][1]['subpod']['img']['@title']
             title = input
             embed = discord.Embed(title=title)
             embed.set_image(url=result)
