@@ -255,7 +255,7 @@ async def purge(ctx, num):
 
 @bot.command(brief="Creates an invite to this server.", description="Creates an invite to this server.")
 async def invite(ctx):
-    link = await ctx.channel.create_invite(max_age = 300)
+    link = await ctx.channel.create_invite(max_age = 0)
     await ctx.send(link)
 
 @bot.command(brief="Kicks mentioned user after a specified amount of time.", description="Kicks mentioned user after a specific amount of time (hours).")
