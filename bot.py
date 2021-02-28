@@ -1,19 +1,14 @@
-import os
-import random
 import discord
 import auth
-from discord.errors import HTTPException
 from discord.ext import commands
 from discord.utils import get
 import asyncio
 import wolframalpha
 import wikipedia
-from wikipedia import search
 import re
 from google.cloud import translate_v2 as translate
 import resources
 from discord import Member
-from discord.ext.commands import has_permissions
 
 #wolfram alpha
 wclient = wolframalpha.Client(auth.appId)
