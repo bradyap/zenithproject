@@ -1,16 +1,12 @@
 import os
-import random
 import discord
 import auth
 from discord.errors import HTTPException
 from discord.ext import commands
-from discord.utils import get
 from notion.client import NotionClient
 from threading import Timer
 import subprocess
-from wikipedia import search
 from datetime import datetime
-from discord.ext.commands import has_permissions
 
 #notion
 nclient = NotionClient(auth.token_v2)
@@ -179,7 +175,6 @@ async def join(ctx, *args):
             await ctx.send(f"Joining {subject}.")
         else:
             await ctx.send(f"Joining {subject}.")
-        
     else:
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdAdd: Permission denied ({ctx.message.author}). Subject = {subject}.")
@@ -233,7 +228,6 @@ async def driving(ctx):
                         day += row.hours
                     if row.time == ['night']:
                         night += row.hours
-                    #print(row.time)
             except:
                 pass
         embed = discord.Embed(title=f"Driving Hours")
