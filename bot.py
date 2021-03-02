@@ -9,6 +9,7 @@ import re
 from google.cloud import translate_v2 as translate
 import resources
 from discord import Member
+import wavelink
 
 #wolfram alpha
 wclient = wolframalpha.Client(auth.appId)
@@ -18,7 +19,6 @@ translate_client = translate.Client.from_service_account_json("DiscordBot-b0d16f
 
 #discord
 bot = commands.Bot(command_prefix="$")
-
 HelpCommand = commands.DefaultHelpCommand(
     no_category = "Commands"
 )
@@ -32,12 +32,8 @@ async def on_ready():
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
-    if ctx.message.author.id == 621056841606103042:
-        print(f"cmdInfo: Permission given ({ctx.message.author}).")
-        await ctx.send('Release - logged in as {0} ({0.id})'.format(bot.user))
-    else:
-        print(f"cmdInfo: Permission denied ({ctx.message.author}).")
-        await ctx.send("You do not have permission to use this command.")
+    print(f"cmdInfo: Permission given ({ctx.message.author}).")
+    await ctx.send('Release - logged in as {0} ({0.id})'.format(bot.user))
 
 @bot.command(brief="Changes bot status", description="Changes bot status. Command useable by select people.")
 async def status(ctx, actType, *, actName = None):
@@ -248,12 +244,12 @@ async def purge(ctx, num):
             print(f"cmdPurge: Permission denied ({ctx.message.author}).")
             await ctx.send("You do not have permission to use this command.")
 
-@bot.command(brief="Creates an invite to this server.", description="Creates an invite to this server.")
+@bot.command(brief="Creates an invite to this server", description="Creates an invite to this server.")
 async def invite(ctx):
     link = await ctx.channel.create_invite(max_age = 0)
     await ctx.send(link)
 
-@bot.command(brief="Kicks mentioned user after a specified amount of time.", description="Kicks mentioned user after a specific amount of time (hours).")
+@bot.command(brief="Kicks mentioned user after a specified amount of time", description="Kicks mentioned user after a specific amount of time (hours).")
 async def timekick(ctx, member:discord.Member, time, unit):
     if ctx.message.author.guild_permissions.kick_members:
         if str(unit) == "minute" or str(unit) == "minutes" or str(unit) == "min" or str(unit) == "mins":
@@ -275,7 +271,7 @@ async def kickTimer(ctx, member:discord.Member, time):
     except discord.Forbidden:
         print("Member kick failed after timer expire.")
 
-@bot.command(brief="Kicks mentioned user after they leave vc.", description="Kicks mentioned user after they leave vc.")
+@bot.command(brief="Kicks mentioned user after they leave vc", description="Kicks mentioned user after they leave vc.")
 async def vckick(ctx, member:discord.Member):
     if ctx.message.author.guild_permissions.kick_members:
         print(f"cmdVckick: Permission given ({ctx.message.author}). Member = {member.display_name}.")

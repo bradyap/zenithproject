@@ -13,7 +13,10 @@ nclient = NotionClient(auth.token_v2)
 
 #discord
 bot = commands.Bot(command_prefix="$")
-bot.remove_command('help')
+HelpCommand = commands.DefaultHelpCommand(
+    no_category = "Commands"
+)
+bot.help_command = HelpCommand
 
 @bot.event
 async def on_ready():
@@ -23,12 +26,8 @@ async def on_ready():
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
-    if ctx.message.author.id == 621056841606103042:
-        print(f"cmdInfo: Permission given ({ctx.message.author}).")
-        await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user))
-    else:
-        print(f"cmdInfo: Permission denied ({ctx.message.author}).")
-        await ctx.send("You do not have permission to use this command.")
+    print(f"cmdInfo: Permission given ({ctx.message.author}).")
+    await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user))
 
 @bot.command(hidden=True)
 async def zoom(ctx):
