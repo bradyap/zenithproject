@@ -9,7 +9,6 @@ import re
 from google.cloud import translate_v2 as translate
 import resources
 from discord import Member
-import wavelink
 
 #wolfram alpha
 wclient = wolframalpha.Client(auth.appId)
@@ -19,6 +18,8 @@ translate_client = translate.Client.from_service_account_json("DiscordBot-b0d16f
 
 #discord
 bot = commands.Bot(command_prefix="$")
+
+#help command
 HelpCommand = commands.DefaultHelpCommand(
     no_category = "Commands"
 )

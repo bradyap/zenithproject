@@ -19,7 +19,7 @@ async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + ".")
     print('----')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
-    await bot.wavelink.initiate_node(host='127.0.0.1', port=2333, rest_uri='http://127.0.0.1:2333', password='wavelink1', identifier='MAIN', region='us_east')
+    await bot.wavelink.initiate_node(host=auth.lavaIp, port=auth.lavaPort, rest_uri=auth.lavaAddr, password=auth.lavaPw, identifier='MAIN', region='us_east')
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
@@ -27,7 +27,7 @@ async def info(ctx):
     await ctx.send('Music - logged in as {0} ({0.id})'.format(bot.user))
     
 @bot.command(brief="Connects bot to voice.", description="Connects bot to whatever voice channel the user is in.")
-async def connect(ctx):
+async def hi(ctx):
     try:
         channel = ctx.author.voice.channel
         player = bot.wavelink.get_player(ctx.guild.id)
@@ -38,12 +38,9 @@ async def connect(ctx):
 
 @bot.command(brief="Disconnects bot from voice.", description="Disconnects bot from voice.")
 async def die(ctx):
-    #try:
-        player = bot.wavelink.get_player(ctx.guild.id)
-        await player.destroy()
-        await ctx.send("Disconnected.")
-    #except:
-        #await ctx.send("Bot is not in a voice channel.") 
+    player = bot.wavelink.get_player(ctx.guild.id)
+    await player.destroy()
+    await ctx.send("Disconnected.") 
 
 @bot.command(brief="Plays specified song.", description="Plays specified song.")
 async def play(ctx, *args):
@@ -57,7 +54,5 @@ async def play(ctx, *args):
 
     await ctx.send(f'Added {str(res[0])} to the queue.')
     await player.play(res[0])
-
-
 
 bot.run(auth.TOKEN)
