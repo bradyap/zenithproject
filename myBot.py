@@ -238,4 +238,9 @@ async def driving(ctx):
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdList: Permission denied ({ctx.message.author}).")
 
+@bot.command(hidden=True)
+async def schedule(ctx):
+    print("cmdSchedule")
+    await ctx.send("https://cdn.discordapp.com/attachments/808488603680112661/811245880211669032/unknown.png")
+
 bot.run(auth.TOKEN)
