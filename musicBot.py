@@ -14,23 +14,6 @@ bot.help_command = HelpCommand
 
 #wavelink
 bot.wavelink = wavelink.Client(bot=bot)
-
-def make_sleep():
-    async def sleep(delay, result=None, *, loop=None):
-        coro = asyncio.sleep(delay, result=result, loop=loop)
-        task = asyncio.ensure_future(coro)
-        sleep.tasks.add(task)
-        try:
-            return await task
-        except asyncio.CancelledError:
-            return result
-        finally:
-            sleep.tasks.remove(task)
-
-    sleep.tasks = set()
-    sleep.cancel_all = lambda: sum(task.cancel() for task in sleep.tasks)
-    return sleep
-
 class Player:
     def __init__(self, guild):
         self.gId = guild.id
@@ -50,7 +33,6 @@ class Player:
 
     #disconnect
     async def disconnect(self, ctx):
-        make_sleep.cancelAll()
         await self.player.destroy()
         await ctx.send("Disconnected.")
 
@@ -77,8 +59,7 @@ class Player:
                 await self.player.play(track)
                 #length of track in seconds (+1 for overhead)
                 length = (track.length / 1000) + 1
-                await sleep(length)
-                #await self.sleeper.sleep(length)
+                await asyncio.sleep(length)
             except QueueEmpty:
                 break
     
