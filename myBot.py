@@ -52,7 +52,7 @@ async def zoom(ctx):
 async def list(ctx):
     if ctx.message.author.id == 621056841606103042:
         print(f"cmdList: Permission given ({ctx.message.author}).")
-        cv = nclient.get_collection_view("https://www.notion.so/Task-List-885896debbd24294aedd4c77b62b36f3")
+        cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
         result = cv.default_query().execute()
         embed = discord.Embed(title="Task List")
         for row in result:
@@ -72,7 +72,7 @@ async def add(ctx, subject, title, urgency, importance):
     if ctx.message.author.id == 621056841606103042:
         print(f"cmdAdd: Permission given ({ctx.message.author}).")
         try:
-            cv = nclient.get_collection_view("https://www.notion.so/Task-List-885896debbd24294aedd4c77b62b36f3")
+            cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
             row = cv.collection.add_row()
             row.subject = subject
             row.title = title
@@ -89,7 +89,7 @@ async def add(ctx, subject, title, urgency, importance):
 async def done(ctx, title):
     if ctx.message.author.id == 621056841606103042:
         print(f"cmdDone: Permission given ({ctx.message.author}).")
-        cv = nclient.get_collection_view("https://www.notion.so/Task-List-885896debbd24294aedd4c77b62b36f3")
+        cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
         result = cv.default_query().execute()
         for row in result:
             if row.title == title:
@@ -239,8 +239,13 @@ async def driving(ctx):
         print(f"cmdList: Permission denied ({ctx.message.author}).")
 
 @bot.command(hidden=True)
-async def schedule(ctx):
-    print("cmdSchedule")
-    await ctx.send("https://cdn.discordapp.com/attachments/808488603680112661/811245880211669032/unknown.png")
+async def hhs(ctx):
+    print("cmdHHS")
+    await ctx.send("https://media.discordapp.net/attachments/808488603680112661/809412579024699462/unknown.png")
+    
+@bot.command(hidden=True)
+async def slhs(ctx):
+    print("cmdSLHS")
+    await ctx.send("https://media.discordapp.net/attachments/757072317716103198/816303808270434364/unknown.png")
 
 bot.run(auth.TOKEN)

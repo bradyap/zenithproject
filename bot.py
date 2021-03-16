@@ -9,6 +9,7 @@ import re
 from google.cloud import translate_v2 as translate
 import resources
 from discord import Member
+import random
 
 #wolfram alpha
 wclient = wolframalpha.Client(auth.appId)
@@ -293,5 +294,11 @@ async def vcKicker(ctx, member:discord.Member):
         else:
             await asyncio.sleep(60)
     await ctx.send(f"Member {member.display_name} was kicked after leaving vc.")
+    
+@bot.command(brief="Sends a pickup line", description="Sends a pickup line.")
+async def pickup(ctx, member:discord.Member):
+    print("cmdPickup")
+    line = random.choice(resources.pickupLines).replace("{name}", member.mention).replace("{author}", ctx.author.mention)
+    await ctx.send(line)
 
 bot.run(auth.TOKEN)

@@ -1,4 +1,5 @@
 import itertools
+import random
 
 languages = [
     'aa', 'Afar',
@@ -197,3 +198,25 @@ languages = [
 ]
 
 langs = dict(itertools.zip_longest(*[iter(languages)] * 2, fillvalue=""))
+
+pickupLines = [
+    "https://cdn.discordapp.com/attachments/681621066472357909/821406315158437898/636435082407071080-sst1.png",  
+    "Hey {name}, are you a cat? Because you're purr-fect.",
+    "Hey {name}, I’d like to take you to the movies, but they don’t let you bring in your own snacks.",
+    "{name}: If I were a cat, I’d spend all nine of my lives with you.",
+    "{name}: if you were a chicken, you’d be impeccable.",
+    "Hey {name}: My name's {author}. Just so you know what to scream.",
+    "{name}, I only have 12 hours to live... please don’t let me die a virgin.",
+    "Hey {name}, kiss me if I’m wrong, but dinosaurs still exist, right?",
+    "{name}, did it hurt when you fell from the vending machine? Cause you look like a snack!",
+    "Hey {name}, I’m no electrician, but I can light up your day.",
+    "Hey {name}, are you a 45 degree angle? Because you’re acute-y!",
+    "{name}: You're hotter than the bottom of my laptop.",
+    "Hey {name}, are you a tower? Because eiffel for you!",
+    "{name} - I’d never play hide and seek with you because someone like you is impossible to find.",
+    "Hey {name}, are you australian? Because you meet all of my koalafications.",
+    "{name} - do you have an inhaler? Because you took my breath away!",
+    "Hey {name}, do you have 11 protons? Because you’re sodium fine!",
+    "Hey {name}, are you a keyboard? Because you’re just my type.",
+    "You know {name}, I always thought Disneyland was the “happiest place on earth”, but that was before I got a chance to stand here next to you.",
+]
