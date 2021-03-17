@@ -1,5 +1,4 @@
 import itertools
-import random
 
 languages = [
     'aa', 'Afar',
@@ -205,7 +204,7 @@ pickupLines = [
     "Hey {name}, I’d like to take you to the movies, but they don’t let you bring in your own snacks.",
     "{name}: If I were a cat, I’d spend all nine of my lives with you.",
     "{name}: if you were a chicken, you’d be impeccable.",
-    "Hey {name}: My name's {author}. Just so you know what to scream.",
+    "Hey {name}: my name's {author}. Just so you know what to scream.",
     "{name}, I only have 12 hours to live... please don’t let me die a virgin.",
     "Hey {name}, kiss me if I’m wrong, but dinosaurs still exist, right?",
     "{name}, did it hurt when you fell from the vending machine? Cause you look like a snack!",
@@ -219,4 +218,18 @@ pickupLines = [
     "Hey {name}, do you have 11 protons? Because you’re sodium fine!",
     "Hey {name}, are you a keyboard? Because you’re just my type.",
     "You know {name}, I always thought Disneyland was the “happiest place on earth”, but that was before I got a chance to stand here next to you.",
+    "Hey {name}, your hand looks heavy. Can I hold it for you?",
+    "Damn {name}, the sparkle in your eyes is so bright, the sun must be jealous.",
+    "If you let me borrow a kiss, {name}, I promise I’ll give it right back.",
+    "There must be something wrong with my eyes, {name}... I can’t seem to take them off of you.",
+    "Hey {name}, are you Christopher Columbus? Cause you colonized my heart.",
+    "Hey {name}, let’s commit the perfect crime: I’ll steal you’re heart, and you’ll steal mine.",
+    "Hey {name}, I’ve been wondering, do your lips taste as good as they look?",
+    "Hey {name}, I’m on top of things. Would you like to be one of them?",
+    "Hey {name}, I was wondering if you had an extra heart, mine seems to have been stolen.",
+    "Hey {name}, my doctor says i’m lacking Vitamin U.",
+    "Hey {name}, I know you’re busy today but can you add me to your to-do list?",
+    "Hey {name}, I’m feeling a little bit off today, but you definitely turned me on.",
+    "Hey {name}, you must be a hell of a thief because you stole my heart through a Discord server.",
+    "Hey {name}, you look cold. Want to use me as a blanket?",
 ]
