@@ -13,11 +13,7 @@ nclient = NotionClient(auth.token_v2)
 
 #discord
 bot = commands.Bot(command_prefix="$")
-HelpCommand = commands.DefaultHelpCommand(
-    no_category = "Commands"
-)
-bot.help_command = HelpCommand
-
+bot.remove_command('help')
 @bot.event
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + ".")
@@ -222,11 +218,11 @@ async def driving(ctx):
         result = cv.default_query().execute()
         for row in result:
             try:
-                    all += row.hours
-                    if row.time == ['day']:
-                        day += row.hours
-                    if row.time == ['night']:
-                        night += row.hours
+                all += row.hours
+                if row.time == ['day']:
+                    day += row.hours
+                if row.time == ['night']:
+                    night += row.hours
             except:
                 pass
         embed = discord.Embed(title=f"Driving Hours")

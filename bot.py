@@ -183,8 +183,8 @@ async def wiki(ctx, *args):
         await ctx.send('No response from wikipedia.')
     try:
         page = wikipedia.page(res[0])
-    except:
-        page =  wikipedia.page(wikipedia.options[0])
+    except wikipedia.exceptions.DisambiguationError as e:
+        page =  wikipedia.page(e.options[0])
     title = page.title.encode('utf-8')
     summary = page.summary.encode('utf-8')
     title1 = title.decode('utf-8', 'ignore')
