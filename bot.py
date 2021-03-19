@@ -1,3 +1,4 @@
+import typing
 import discord
 import auth
 from discord.ext import commands
@@ -156,91 +157,96 @@ async def unmute(ctx):
 
 @bot.command(brief="Asks Wolfram Alpha an inputted question", description="Asks Wolfram Alpha an inputted question. Some questions will not return results.")
 async def ask(ctx, *args):
-    input = ' '.join(args[:])
-    print(f'cmdAsk: Search query "{input}"')
-    res = wclient.query(input)
-    if res['@success'] == 'false':
-        print(f'cmdAsk: Question cannot be resolved.')
-        await ctx.send('Question cannot be resolved.')
-    else:
-        try:
-            result = res['pod'][1]['subpod']['img']['@src']
-            title = input
-            embed = discord.Embed(title=title)
-            embed.set_image(url=result)
-            await ctx.send(embed=embed)
-        except:
-            result = next(res.results).text
-            await ctx.send(result)
+    async with ctx.channel.typing():
+        input = ' '.join(args[:])
+        print(f'cmdAsk: Search query "{input}"')
+        res = wclient.query(input)
+        if res['@success'] == 'false':
+            print(f'cmdAsk: Question cannot be resolved.')
+            await ctx.send('Question cannot be resolved.')
+        else:
+            try:
+                result = res['pod'][1]['subpod']['img']['@src']
+                title = input
+                embed = discord.Embed(title=title)
+                embed.set_image(url=result)
+                await ctx.send(embed=embed)
+            except:
+                result = next(res.results).text
+                await ctx.send(result)
 
 @bot.command(brief="Returns a Wikipedia page for the given term", description="Returns a Wikipedia page for the given term. *Work in progress.")
 async def wiki(ctx, *args):
-    input = ' '.join(args[:])
-    print(f'cmdWiki: Search query "{input}"')
-    res = wikipedia.search(input)
-    if not res:
-        print(f'cmdWiki: No result from wikipedia.')
-        await ctx.send('No response from wikipedia.')
-    try:
-        page = wikipedia.page(res[0])
-    except wikipedia.exceptions.DisambiguationError as e:
-        page =  wikipedia.page(e.options[0])
-    title = page.title.encode('utf-8')
-    summary = page.summary.encode('utf-8')
-    title1 = title.decode('utf-8', 'ignore')
-    summary1 = summary.decode('utf-8')
-    link = page.url[:2000]
-    embed = discord.Embed(title=title1, description=link)
-    summary2 = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', summary1)
-    num = 0
-    temp = summary2[num]
-    printing = True;
-    while printing:
-        if num < len(summary2):
-            while len(temp) <= 1024 and num < len(summary2):
-                if len(temp) + len(summary2[num]) <= 1024:
-                    temp = temp + ' ' + summary2[num]
-                    num = num + 1 
-                else:
-                    embed.add_field(name='\u200b', inline=False, value=temp)
-                    temp = ''
-                    temp = summary2[num]
-                    break
-        else:
-            embed.add_field(name='\u200b', inline=False, value=temp)
-            printing = False;
-    await ctx.send(embed=embed)
+    async with ctx.channel.typing():
+        input = ' '.join(args[:])
+        print(f'cmdWiki: Search query "{input}"')
+        res = wikipedia.search(input)
+        if not res:
+            print(f'cmdWiki: No result from wikipedia.')
+            await ctx.send('No response from wikipedia.')
+        try:
+            page = wikipedia.page(res[0])
+        except wikipedia.exceptions.DisambiguationError as e:
+            page =  wikipedia.page(e.options[0])
+        title = page.title.encode('utf-8')
+        summary = page.summary.encode('utf-8')
+        title1 = title.decode('utf-8', 'ignore')
+        summary1 = summary.decode('utf-8')
+        link = page.url[:2000]
+        embed = discord.Embed(title=title1, description=link)
+        summary2 = re.split('(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', summary1)
+        num = 0
+        temp = summary2[num]
+        printing = True
+        while printing:
+            if num < len(summary2):
+                while len(temp) <= 1024 and num < len(summary2):
+                    if len(temp) + len(summary2[num]) <= 1024:
+                        temp = temp + ' ' + summary2[num]
+                        num = num + 1 
+                    else:
+                        embed.add_field(name='\u200b', inline=False, value=temp)
+                        temp = ''
+                        temp = summary2[num]
+                        break
+            else:
+                embed.add_field(name='\u200b', inline=False, value=temp)
+                printing = False
+        await ctx.send(embed=embed)
 
 @bot.command(brief="Translates given text into given language", description="Translates given text into given language. See syntax below. Command autodetects source language.")
 async def translate(ctx, langInput, *input):
-    langIn = langInput.capitalize()
-    content = ' '.join(input[:])
-    langs1 = dict((v,k) for k,v in resources.langs.items())
-    langs2 = resources.langs
-    lang = langs1.get(langIn, langIn)
-    pLang = langs2.get(langIn, langIn)
-    result = translate_client.translate(content, lang)
-    og = langs2.get(result["detectedSourceLanguage"], "noneType")
-    embed = discord.Embed(title=f"Translator")
-    try:
-        embed.add_field(name=f"Text translated from {og} to {pLang}.", value=result["translatedText"], inline=False)
-    except:
-        embed.add_field(name="Error", value="Translation error. Please try again.", inline=False)
-        print(f'cmdTranslate: Translation error. Input = "{content}"')
-    await ctx.send(embed=embed)
+    async with ctx.channel.typing():
+        langIn = langInput.capitalize()
+        content = ' '.join(input[:])
+        langs1 = dict((v,k) for k,v in resources.langs.items())
+        langs2 = resources.langs
+        lang = langs1.get(langIn, langIn)
+        pLang = langs2.get(langIn, langIn)
+        result = translate_client.translate(content, lang)
+        og = langs2.get(result["detectedSourceLanguage"], "noneType")
+        embed = discord.Embed(title=f"Translator")
+        try:
+            embed.add_field(name=f"Text translated from {og} to {pLang}.", value=result["translatedText"], inline=False)
+        except:
+            embed.add_field(name="Error", value="Translation error. Please try again.", inline=False)
+            print(f'cmdTranslate: Translation error. Input = "{content}"')
+        await ctx.send(embed=embed)
 
 @bot.command(brief="Returns image of the specified user's profile picture", description="Returns image of the specified user's profile picture. Defaults to message sender.")
 async def pfp(ctx, member: Member = None):
     print(f"cmdPfp: Permission given ({ctx.message.author}).")
     if not member:
         member = ctx.author
-    pfp = member.avatar.url
+    pfp = member.avatar_url
     embed=discord.Embed(title="test", description='{}, test'.format(member.mention) , color=0xecce8b)
     embed.set_image(url=(pfp))
+    await ctx.send(embed=embed)
+
             
 @bot.command(brief="Delete a chosen number of messages", description="Delete a chosen number of messages. Command usable by those with manage messages permission.")
 async def purge(ctx, num):
-        clear = int(num) + 1;
+        clear = int(num) + 1
         if ctx.message.author.guild_permissions.manage_messages:
             print(f"cmdPurge: Permission given ({ctx.message.author}). Messages cleared = " + str(clear) + ".")
             await ctx.channel.purge(limit=clear)
@@ -292,7 +298,7 @@ async def vcKicker(ctx, member:discord.Member):
     while True:
         if member.voice == None:
             await member.kick()
-            break;
+            break
         else:
             await asyncio.sleep(60)
     await ctx.send(f"Member {member.display_name} was kicked after leaving vc.")
