@@ -217,7 +217,7 @@ async def pfp(ctx, member: Member = None):
     print(f"cmdPfp: Permission given ({ctx.message.author}).")
     if not member:
         member = ctx.author
-    await ctx.send(member.avatar_url_as(format='png', size=512))
+    await ctx.send(member.avatar_url_as(size=512))
             
 @bot.command(brief="Delete a chosen number of messages", description="Delete a chosen number of messages. Command usable by those with manage messages permission.")
 async def purge(ctx, num):
