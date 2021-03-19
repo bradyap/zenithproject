@@ -26,6 +26,26 @@ async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
     await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user))
 
+@bot.command(brief="Changes bot status", description="Changes bot status. Command useable by select people.")
+async def status(ctx, actType, *, actName = None):
+    if ctx.message.author.id == 621056841606103042 or ctx.message.author.id == 309045139974914048 or ctx.message.author.id == 558430263013670922:
+        print(f"cmdStatus: Permission given ({ctx.message.author}).")
+        if actType == "playing":
+            print("cmdStatus")
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=actName))
+            await ctx.send("Status updated successfully.")
+        if actType == "watching":
+            print("cmdStatus")
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=actName))
+            await ctx.send("Status updated successfully.")
+        if actType == "listening":
+            print("cmdStatus")
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=actName))
+            await ctx.send("Status updated successfully.")
+    else:
+        await ctx.send("You do not have permission to use this command.")
+        print(f"cmdStatus: Permission denied ({ctx.message.author}).")
+        
 @bot.command(hidden=True)
 async def zoom(ctx):
     if ctx.message.author.id == 621056841606103042:
