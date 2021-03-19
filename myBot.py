@@ -238,11 +238,11 @@ async def driving(ctx):
 @bot.command(hidden=True)
 async def hhs(ctx):
     print("cmdHHS")
-    await ctx.send("https://media.discordapp.net/attachments/808488603680112661/809412579024699462/unknown.png")
+    await ctx.send(file=discord.File("images\hhs.png"))
     
 @bot.command(hidden=True)
 async def slhs(ctx):
     print("cmdSLHS")
-    await ctx.send("https://media.discordapp.net/attachments/757072317716103198/816303808270434364/unknown.png")
+    await ctx.send(file=discord.File("images\slhs.png"))
 
 bot.run(auth.TOKEN)

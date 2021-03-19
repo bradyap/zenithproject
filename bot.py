@@ -1,4 +1,3 @@
-import typing
 import discord
 import auth
 from discord.ext import commands
