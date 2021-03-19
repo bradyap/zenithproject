@@ -7,10 +7,7 @@ import asyncio
 
 #discord
 bot = commands.Bot(command_prefix="$")
-HelpCommand = commands.DefaultHelpCommand(
-    no_category = "Music Commands"
-)
-bot.help_command = HelpCommand
+bot.remove_command('help')
 
 #wavelink
 bot.wavelink = wavelink.Client(bot=bot)

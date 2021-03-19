@@ -14,6 +14,7 @@ nclient = NotionClient(auth.token_v2)
 #discord
 bot = commands.Bot(command_prefix="$")
 bot.remove_command('help')
+
 @bot.event
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + ".")
