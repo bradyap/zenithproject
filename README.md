@@ -1,5 +1,5 @@
-Multipurpose discord bot designed and written by me. Use $help to see a list of commands. Up most of the time, I can't gaurantee 24/7 uptime.
+Use $help to see a list of commands. Music bot is in alpha and is not up all of the time.
 
-Invite link: https://discord.com/api/oauth2/authorize?client_id=710700921952141393&permissions=8&scope=bot
+Use this [link](https://discord.com/api/oauth2/authorize?client_id=710700921952141393&permissions=8&scope=bot%20applications.commands) to invite Zenith to your server.
 
-Brady Pettengill, 2020 - 2021.
+Written by Brady Pettengill with help from Remi Pepelko (2020 - 2021).
