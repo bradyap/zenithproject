@@ -11,12 +11,14 @@ bot.remove_command('help')
 
 #wavelink
 bot.wavelink = wavelink.Client(bot=bot)
+
 class Player:
     def __init__(self, guild):
         self.gId = guild.id
         self.player = bot.wavelink.get_player(self.gId)
         self.queue = asyncio.Queue()
         self.loop = asyncio.get_event_loop
+        self.playing = "No song is currently playing."
 
     #connect
     async def connect(self, ctx):
@@ -35,12 +37,16 @@ class Player:
 
     #prints queue
     async def getQueue(self, ctx):
-        await ctx.send(self.queue)
-
-    #next song in queue
-    async def nextSong(self):
-        while True:
-            await self.queue.get()
+        embed = discord.Embed(title="Music Queue")
+        stop = object()
+        track = object()
+        await self.queue.put(stop)
+        track = self.queue.get_nowait()
+        while track is not stop:
+            embed.add_field(name='\u200b', inline=False, value=track)
+            await self.queue.put(track)
+            track = self.queue.get_nowait()
+        await ctx.send(embed=embed)
 
     #adds to queue
     async def add(self, ctx, track):
@@ -52,14 +58,42 @@ class Player:
         while True:
             try:
                 track = self.queue.get_nowait()
-                await ctx.send(f'Now playing: {track.title}.')
+                await ctx.send(f'Now playing: {track}.')
                 await self.player.play(track)
+                self.playing = track
                 #length of track in seconds (+1 for overhead)
                 length = (track.length / 1000) + 1
                 await asyncio.sleep(length)
             except QueueEmpty:
                 break
+        
+    #prints currently playing song
+    async def nowPlaying(self, ctx):
+        await ctx.send(self.playing)
     
+#skips current track
+async def skip(ctx, oldPlayer):
+    stop = object()
+    track = object()
+    temp = asyncio.Queue()
+    #copy player queue to temp
+    await oldPlayer.queue.put(stop)
+    track = oldPlayer.queue.get_nowait()
+    while track is not stop:
+        await temp.put(track)
+        track = oldPlayer.queue.get_nowait()
+    #destroy original player and makes new one
+    await oldPlayer.player.destroy()
+    queueMap[ctx.guild.id] = Player(ctx.guild)
+    player = queueMap[ctx.guild.id]
+    #copy temp into new player
+    await temp.put(stop)
+    track = temp.get_nowait()
+    while track is not stop:
+        await player.queue.put(track)
+        track = temp.get_nowait()
+    await ctx.send("Track skipped.")
+
 #bot
 @bot.event
 async def on_ready():
@@ -87,9 +121,11 @@ async def hi(ctx):
 async def die(ctx):
     player = queueMap[ctx.guild.id]
     await player.disconnect(ctx)
+    del player
+    queueMap[ctx.guild.id] = Player(ctx.guild)
 
 @bot.command(brief="Plays specified song", description="Plays specified song.")
-async def play(ctx, *args):
+async def p(ctx, *args):
     input = ' '.join(args[:])
     player = queueMap[ctx.guild.id]
     print(f'cmdPlay: Search query "{input}"')
@@ -105,8 +141,18 @@ async def play(ctx, *args):
             await player.play(ctx)
 
 @bot.command(brief="Displays the queue", description="Displays the queue.")
-async def queue(ctx):
+async def q(ctx):
     player = queueMap[ctx.guild.id]
     await player.getQueue(ctx)
+    
+@bot.command(brief="Displays currently playing song", description="Displays currently playing song.")
+async def np(ctx):
+    player = queueMap[ctx.guild.id]
+    await player.nowPlaying(ctx)
+
+@bot.command(brief="Skips currently playing song", description="Skips currently playing song.")
+async def s(ctx):
+    oldPlayer = queueMap[ctx.guild.id]
+    await skip(ctx, oldPlayer)
 
 bot.run(auth.TOKEN)

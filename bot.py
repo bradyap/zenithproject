@@ -154,7 +154,7 @@ async def ask(ctx, *args):
                 result = next(res.results).text
                 await ctx.send(result)
 
-@bot.command(brief="Returns a Wikipedia page for the given term", description="Returns a Wikipedia page for the given term. *Work in progress.")
+@bot.command(brief="Returns a Wikipedia page for the given term", description="Returns a Wikipedia page for the given term.")
 async def wiki(ctx, *args):
     async with ctx.channel.typing():
         input = ' '.join(args[:])
@@ -216,7 +216,7 @@ async def translate(ctx, langInput, *input):
 async def pfp(ctx, member: Member = None):
     print(f"cmdPfp: Permission given ({ctx.message.author}).")
     if not member:
-        member = ctx.author
+        member = ctx.author 
     await ctx.send(member.avatar_url_as(size=512))
             
 @bot.command(brief="Delete a chosen number of messages", description="Delete a chosen number of messages. Command usable by those with manage messages permission.")

@@ -7,12 +7,14 @@ from notion.client import NotionClient
 from threading import Timer
 import subprocess
 from datetime import datetime
+from discord_slash import SlashCommand, SlashContext
 
 #notion
 nclient = NotionClient(auth.token_v2)
 
 #discord
 bot = commands.Bot(command_prefix="$")
+slash = SlashCommand(bot, sync_commands=True)
 bot.remove_command('help')
 
 @bot.event
@@ -68,17 +70,18 @@ async def zoom(ctx):
 @bot.command(hidden=True)
 async def list(ctx):
     if ctx.message.author.id == 621056841606103042:
-        print(f"cmdList: Permission given ({ctx.message.author}).")
-        cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
-        result = cv.default_query().execute()
-        embed = discord.Embed(title="Task List")
-        for row in result:
-            try:
-                if row.complete == False:
-                    embed.add_field(name=row.title, value=row.subject + ", " + row.urgency + ", " + row.importance, inline=False)
-            except:
-                pass
-        await ctx.send(embed=embed)
+        async with ctx.channel.typing():
+            print(f"cmdList: Permission given ({ctx.message.author}).")
+            cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
+            result = cv.default_query().execute()
+            embed = discord.Embed(title="Task List")
+            for row in result:
+                try:
+                    if row.complete == False:
+                        embed.add_field(name=row.title, value=row.subject + ", " + row.urgency + ", " + row.importance, inline=False)
+                except:
+                    pass
+            await ctx.send(embed=embed)
     else:
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdList: Permission denied ({ctx.message.author}).")
@@ -96,6 +99,7 @@ async def add(ctx, subject, title, urgency, importance):
             row.urgency = urgency
             row.importance = importance
             row.complete = False
+            await ctx.send("Item added successfully.")
         except:
             await ctx.send("Check spelling/syntax and try again.")
     else:
@@ -113,6 +117,7 @@ async def done(ctx, title):
                 target = cv.collection.add_row()
                 row.title = title
                 row.complete = True
+        await ctx.send("Item marked as completed.")
     else:
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdDone: Permission denied ({ctx.message.author}).")
@@ -222,6 +227,7 @@ async def drive(ctx, time, unit, tod):
             row.date = datetime.today().strftime("%m/%d/%y")
             row.hours = float(time)
             row.time = tod
+            await ctx.send("Time added successfully.")
         except:
             await ctx.send("Check spelling/syntax and try again.")
     else:
@@ -231,26 +237,27 @@ async def drive(ctx, time, unit, tod):
 @bot.command(hidden=True)
 async def driving(ctx):
     if ctx.message.author.id == 621056841606103042:
-        print(f"cmdList: Permission given ({ctx.message.author}).")
-        cv = nclient.get_collection_view("https://www.notion.so/d2d19d98d9344cbd84ea35a1c095ee63?v=a476645a60e54ba4a48e73e39e7f0cf2")
-        all = 0
-        day = 0
-        night = 0
-        result = cv.default_query().execute()
-        for row in result:
-            try:
-                all += row.hours
-                if row.time == ['day']:
-                    day += row.hours
-                if row.time == ['night']:
-                    night += row.hours
-            except:
-                pass
-        embed = discord.Embed(title=f"Driving Hours")
-        embed.add_field(name="Total", value=str(all) + "/45", inline=False)
-        embed.add_field(name="Day", value=str(day) + "/30", inline=False)
-        embed.add_field(name="Night", value=str(night) + "/15", inline=False)
-        await ctx.send(embed=embed)
+        async with ctx.channel.typing():
+            print(f"cmdList: Permission given ({ctx.message.author}).")
+            cv = nclient.get_collection_view("https://www.notion.so/d2d19d98d9344cbd84ea35a1c095ee63?v=a476645a60e54ba4a48e73e39e7f0cf2")
+            all = 0
+            day = 0
+            night = 0
+            result = cv.default_query().execute()
+            for row in result:
+                try:
+                    all += row.hours
+                    if row.time == ['day']:
+                            day += row.hours
+                    if row.time == ['night']:
+                            night += row.hours
+                except:
+                    pass
+            embed = discord.Embed(title=f"Driving Hours")
+            embed.add_field(name="Total", value=str(all) + "/45", inline=False)
+            embed.add_field(name="Day", value=str(day) + "/30", inline=False)
+            embed.add_field(name="Night", value=str(night) + "/15", inline=False)
+            await ctx.send(embed=embed)
     else:
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdList: Permission denied ({ctx.message.author}).")
@@ -264,5 +271,33 @@ async def hhs(ctx):
 async def slhs(ctx):
     print("cmdSLHS")
     await ctx.send(file=discord.File("images\slhs.png"))
+            
+#default nicknames
+bNick = "Juan"
+rNick = "PassiveStone"
+
+#anti simp nick on space
+@bot.listen()
+async def on_message(message):
+    if message.channel.guild.id == 757052713489006652:
+        if message.author.id == 621056841606103042:
+            global bNick
+            if message.author.display_name == "simp":
+                await message.author.edit(nick = bNick)
+            else:
+                bNick = message.author.display_name
+        if message.author.id == 309045139974914048:
+            global rNick
+            if message.author.display_name == "simp":
+                await message.author.edit(nick = rNick)
+            else:
+                rNick = message.author.display_name
+
+#slash command guilds (all slash commands in alpha)
+slash_guilds = [760932362762059776, 688903571311558696, 757052713489006652]
+    
+@slash.slash(name="info")
+async def _info(ctx):
+    await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user))
 
 bot.run(auth.TOKEN)
