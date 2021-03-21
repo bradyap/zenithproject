@@ -17,4 +17,6 @@ async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
     await ctx.send('Insults - logged in as {0} ({0.id})'.format(bot.user))
 
+
+
 bot.run(auth.TOKEN)
