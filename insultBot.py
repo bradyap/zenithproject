@@ -1,5 +1,7 @@
 import discord
 import auth
+import random
+import insultResources
 from discord.ext import commands
 
 #discord
@@ -18,5 +20,15 @@ async def info(ctx):
     await ctx.send('Insults - logged in as {0} ({0.id})'.format(bot.user))
 
 
+
+
+#converted pickup line 
+@bot.command(brief="Makes insults, you moist jukebox", description="Makes insults, you moist jukebox. Current nouns to use are short.")
+async def insult(ctx, noun):
+    if noun == "short":
+        shortReturn = random.choice(insultResources.short)
+
+    line = random.choice(insultResources.adjectivesList) + "  " + shortReturn
+    await ctx.send(line)
 
 bot.run(auth.TOKEN)
