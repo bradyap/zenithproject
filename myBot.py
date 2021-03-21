@@ -279,7 +279,7 @@ rNick = "PassiveStone"
 #anti simp nick on space
 @bot.listen()
 async def on_message(message):
-    if message.channel.guild.id == 757052713489006652:
+    if message.channel.guild.id == auth.space:
         if message.author.id == auth.brady:
             global bNick
             if message.author.display_name == "simp":
