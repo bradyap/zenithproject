@@ -30,7 +30,7 @@ async def info(ctx):
 
 @bot.command(brief="Changes bot status", description="Changes bot status. Command useable by select people.")
 async def status(ctx, actType, *, actName = None):
-    if ctx.message.author.id == 621056841606103042 or ctx.message.author.id == 309045139974914048 or ctx.message.author.id == 558430263013670922:
+    if ctx.message.author.id == auth.brady:
         print(f"cmdStatus: Permission given ({ctx.message.author}).")
         if actType == "playing":
             print("cmdStatus")
@@ -50,7 +50,7 @@ async def status(ctx, actType, *, actName = None):
         
 @bot.command(hidden=True)
 async def zoom(ctx):
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         print(f"cmdZoom: Permission given ({ctx.message.author}).")
         try:
             guild = ctx.guild
@@ -69,7 +69,7 @@ async def zoom(ctx):
 
 @bot.command(hidden=True)
 async def list(ctx):
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         async with ctx.channel.typing():
             print(f"cmdList: Permission given ({ctx.message.author}).")
             cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
@@ -89,7 +89,7 @@ async def list(ctx):
 
 @bot.command(hidden=True)
 async def add(ctx, subject, title, urgency, importance):
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         print(f"cmdAdd: Permission given ({ctx.message.author}).")
         try:
             cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
@@ -108,7 +108,7 @@ async def add(ctx, subject, title, urgency, importance):
 
 @bot.command(hidden=True)
 async def done(ctx, title):
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         print(f"cmdDone: Permission given ({ctx.message.author}).")
         cv = nclient.get_collection_view("https://www.notion.so/ac86141384244f18b5376b174d8fb354?v=af2ccbfdba5c43fd810644cdd5f1dafb")
         result = cv.default_query().execute()
@@ -127,7 +127,7 @@ spamCount = 0
 async def on_message(message):
     try:
         content =  str(message.mentions)
-        if "id=621056841606103042" in content:
+        if "id=auth.brady" in content:
             print("eventSpam")
             global spamCount 
             channel = message.channel 
@@ -156,7 +156,7 @@ def spamTimer():
 
 @bot.command(hidden=True)
 async def launch(ctx, item):
-    if ctx.message.author.id == 621056841606103042 or ctx.message.author.id == 485794062448852993 or ctx.message.author.id ==558430263013670922:
+    if ctx.message.author.id == auth.brady or ctx.message.author.id == 485794062448852993 or ctx.message.author.id ==558430263013670922:
         print(f"cmdLaunch: Permission given ({ctx.message.author}). Item = {item}")
         if item == "val":
             process = subprocess.Popen(["C:\Riot Games\Riot Client\RiotClientServices.exe", "--launch-product=valorant", "--launch-patchline=live"])
@@ -168,7 +168,7 @@ async def launch(ctx, item):
 @bot.command(hidden=True)
 async def join(ctx, *args):
     subject = " ".join(args[:])
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         print(f"cmdSubject: Permission given ({ctx.message.author}). Subject = {subject}.")
         if subject == "spanish":
             os.system("start chrome " + auth.spanish)
@@ -203,7 +203,7 @@ async def join(ctx, *args):
 @bot.command(hidden=True)
 async def cmd(ctx, *args):
     input = " ".join(args[:])
-    if ctx.message.author.id == 621056841606103042: 
+    if ctx.message.author.id == auth.brady: 
         print(f"cmdCmd: Permission given ({ctx.message.author}). Input = {input}.")
         stream = os.popen(input)
         output = stream.read()
@@ -217,7 +217,7 @@ async def cmd(ctx, *args):
 
 @bot.command(hidden=True)
 async def drive(ctx, time, unit, tod):
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         print(f"cmdAdd: Permission given ({ctx.message.author}).")
         if str(unit) == "minute" or str(unit) == "minutes" or str(unit) == "min" or str(unit) == "mins":
             time = round(float(time) / 60, 2)
@@ -236,7 +236,7 @@ async def drive(ctx, time, unit, tod):
 
 @bot.command(hidden=True)
 async def driving(ctx):
-    if ctx.message.author.id == 621056841606103042:
+    if ctx.message.author.id == auth.brady:
         async with ctx.channel.typing():
             print(f"cmdList: Permission given ({ctx.message.author}).")
             cv = nclient.get_collection_view("https://www.notion.so/d2d19d98d9344cbd84ea35a1c095ee63?v=a476645a60e54ba4a48e73e39e7f0cf2")
@@ -280,13 +280,13 @@ rNick = "PassiveStone"
 @bot.listen()
 async def on_message(message):
     if message.channel.guild.id == 757052713489006652:
-        if message.author.id == 621056841606103042:
+        if message.author.id == auth.brady:
             global bNick
             if message.author.display_name == "simp":
                 await message.author.edit(nick = bNick)
             else:
                 bNick = message.author.display_name
-        if message.author.id == 309045139974914048:
+        if message.author.id == auth.remi:
             global rNick
             if message.author.display_name == "simp":
                 await message.author.edit(nick = rNick)
@@ -294,7 +294,7 @@ async def on_message(message):
                 rNick = message.author.display_name
 
 #slash command guilds (all slash commands in alpha)
-slash_guilds = [760932362762059776, 688903571311558696, 757052713489006652]
+slash_guilds = [auth.zenithproject, auth.mmr, auth.space]
     
 @slash.slash(name="info")
 async def _info(ctx):
