@@ -232,4 +232,6 @@ pickupLines = [
     "Hey {name}, I’m feeling a little bit off today, but you definitely turned me on.",
     "Hey {name}, you must be a hell of a thief because you stole my heart through a Discord server.",
     "Hey {name}, you look cold. Want to use me as a blanket?",
+    "Hey {name}, are you retarded? Cause you lookin extra special today.",
+    "Damn {name}, you a bagel? Cause I'd spread my cream all over you.",
 ]
