@@ -8,6 +8,7 @@ from threading import Timer
 import subprocess
 from datetime import datetime
 from discord_slash import SlashCommand, SlashContext
+from discord.utils import get
 
 #notion
 nclient = NotionClient(auth.token_v2)
@@ -19,14 +20,14 @@ bot.remove_command('help')
 
 @bot.event
 async def on_ready():
-    print('Logged in as {0} ({0.id})'.format(bot.user) + ".")
+    print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
-    await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user))
+    await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
 
 @bot.command(brief="Changes bot status", description="Changes bot status. Command useable by select people.")
 async def status(ctx, actType, *, actName = None):
@@ -292,6 +293,12 @@ async def on_message(message):
                 await message.author.edit(nick = rNick)
             else:
                 rNick = message.author.display_name
+                
+#bot.listen()
+#async def on_message(message):
+    #if message.channel.guild.id == auth.space and message.author.id == auth.ming:
+        #emoji = get(bot.get_all_emojis(), name='pleading_face')
+        #await message.add_reaction(emoji)
 
 #slash command guilds (all slash commands in alpha)
 slash_guilds = [auth.zenithproject, auth.mmr, auth.space]

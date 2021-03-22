@@ -97,7 +97,7 @@ async def skip(ctx, oldPlayer):
 #bot
 @bot.event
 async def on_ready():
-    print('Logged in as {0} ({0.id})'.format(bot.user) + ".")
+    print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
     await bot.wavelink.initiate_node(host=auth.lavaIp, port=auth.lavaPort, rest_uri=auth.lavaAddr, password=auth.lavaPw, identifier='MAIN', region='us_east')
@@ -110,7 +110,7 @@ async def on_ready():
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
-    await ctx.send('Music - logged in as {0} ({0.id})'.format(bot.user))
+    await ctx.send('Music - logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     
 @bot.command(brief="Connects bot to voice", description="Connects bot to whatever voice channel the user is in.")
 async def hi(ctx):

@@ -28,14 +28,14 @@ bot.help_command = HelpCommand
 
 @bot.event
 async def on_ready():
-    print('Logged in as {0} ({0.id})'.format(bot.user) + ".")
+    print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
-    await ctx.send('Release - logged in as {0} ({0.id})'.format(bot.user))
+    await ctx.send('Release logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
 
 @bot.command(brief="Returns mentioned user's id", description="Returns mentioned user's id. Defaults to message author.")
 async def id(ctx):
