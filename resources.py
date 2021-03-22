@@ -233,4 +233,9 @@ pickupLines = [
     "Hey {name}, sorry for untying your shoes, I just want you to fall for me.",
     "Hey {name}, my car broke down. Can I ride you insead?",
     "{name}, are you my dinner? Cause you're a full course meal.",
+    "Hey {name}, are you ice cream? Because your face looks like Rocky Road.",
+    "{name}, are you a chair? Cause I wanna sit on your face.",
+    "{name}. You may not be Jesus, but I'd still nail the heck out of you.",
+    "{name}, I put the \"std\" in \"stud.\" The only thing I need now is \"u.\",",
+    "Hey {name}, are you a stimulus check? Cause you stimulate me. ;)",
 ]
