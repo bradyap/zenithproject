@@ -238,4 +238,6 @@ pickupLines = [
     "{name}. You may not be Jesus, but I'd still nail the heck out of you.",
     "{name}, I put the \"std\" in \"stud.\" The only thing I need now is \"u.\",",
     "Hey {name}, are you a stimulus check? Cause you stimulate me. ;)",
+    "Hey {name}, are you a roller coaster. Cause whenever I'm riding you, I never wanna start.",
+    "Hey {name}, are you a roller coaster. Cause when I ride you, I'm always screaming.",
 ]
