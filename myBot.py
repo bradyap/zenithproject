@@ -27,7 +27,7 @@ async def on_ready():
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
-    await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
+    await ctx.send('Personal logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
 
 @bot.command(brief="Changes bot status", description="Changes bot status. Command useable by select people.")
 async def status(ctx, actType, *, actName = None):
