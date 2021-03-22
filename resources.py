@@ -209,7 +209,6 @@ pickupLines = [
     "Hey {name}, kiss me if I’m wrong, but dinosaurs still exist, right?",
     "{name}, did it hurt when you fell from the vending machine? Cause you look like a snack!",
     "Hey {name}, I’m no electrician, but I can light up your day.",
-    "Hey {name}, are you a 45 degree angle? Because you’re acute-y!",
     "{name}: You're hotter than the bottom of my laptop.",
     "Hey {name}, are you a tower? Because eiffel for you!",
     "{name} - I’d never play hide and seek with you because someone like you is impossible to find.",
@@ -234,4 +233,8 @@ pickupLines = [
     "Hey {name}, you look cold. Want to use me as a blanket?",
     "Hey {name}, are you retarded? Cause you lookin extra special today.",
     "Damn {name}, you a bagel? Cause I'd spread my cream all over you.",
+    "Hey {name}, are you my flute? Cause I want to blow you.",
+    "Hey {name}, are you a drum? Cause I'd hit it.",
+    "Hey {name}, are you a pair of gloves. Cause I wanna put my hands in you.",
+    "Hey {name}, are you a guitar. Cause I'd like to finger you.",
 ]
