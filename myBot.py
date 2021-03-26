@@ -264,14 +264,22 @@ async def driving(ctx):
         print(f"cmdList: Permission denied ({ctx.message.author}).")
 
 @bot.command(hidden=True)
-async def hhs(ctx):
+async def hhs(ctx, *args):
     print("cmdHHS")
-    await ctx.send(file=discord.File("images\hhs.png"))
+    input = " ".join(args[:])
+    if input == "2hr":
+        await ctx.send(file=discord.File("images\hhs2hr.png"))
+    else:
+        await ctx.send(file=discord.File("images\hhs.png"))
     
 @bot.command(hidden=True)
-async def slhs(ctx):
+async def slhs(ctx, *args):
     print("cmdSLHS")
-    await ctx.send(file=discord.File("images\slhs.png"))
+    input = " ".join(args[:])
+    if input == "2hr":
+        await ctx.send(file=discord.File("images\slhs2hr.png"))
+    else:
+        await ctx.send(file=discord.File("images\slhs.png"))
             
 #default nicknames
 bNick = "Juan"
