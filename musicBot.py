@@ -4,6 +4,7 @@ import auth
 import wavelink
 from discord.ext import commands
 import asyncio
+from random import shuffle
 
 #discord
 bot = commands.Bot(command_prefix="$")
@@ -31,9 +32,8 @@ class Player:
                 await ctx.send("Please join a voice channel.")
 
     #disconnect
-    async def disconnect(self, ctx):
-        await self.player.destroy()
-        await ctx.send("Disconnected.")
+    async def disconnect(self):
+        await self.player.disconnect()
 
     #prints queue
     async def getQueue(self, ctx):
@@ -48,11 +48,6 @@ class Player:
             track = self.queue.get_nowait()
         await ctx.send(embed=embed)
 
-    #adds to queue
-    async def add(self, ctx, track):
-        await self.player.queue.put(track)
-        await ctx.send(f'Added {track} to the queue.')
-
     #plays queue
     async def play(self, ctx):
         while True:
@@ -61,38 +56,39 @@ class Player:
                 await ctx.send(f'Now playing: {track}.')
                 await self.player.play(track)
                 self.playing = track
-                #length of track in seconds (+1 for overhead)
-                length = (track.length / 1000) + 1
-                await asyncio.sleep(length)
+                while self.player.is_playing:
+                    await asyncio.sleep(1)
             except QueueEmpty:
+                await self.player.stop()
                 break
-        
+
     #prints currently playing song
     async def nowPlaying(self, ctx):
         await ctx.send(self.playing)
-    
-#skips current track
-async def skip(ctx, oldPlayer):
-    stop = object()
-    track = object()
-    temp = asyncio.Queue()
-    #copy player queue to temp
-    await oldPlayer.queue.put(stop)
-    track = oldPlayer.queue.get_nowait()
-    while track is not stop:
-        await temp.put(track)
-        track = oldPlayer.queue.get_nowait()
-    #destroy original player and makes new one
-    await oldPlayer.player.destroy()
-    queueMap[ctx.guild.id] = Player(ctx.guild)
-    player = queueMap[ctx.guild.id]
-    #copy temp into new player
-    await temp.put(stop)
-    track = temp.get_nowait()
-    while track is not stop:
-        await player.queue.put(track)
-        track = temp.get_nowait()
-    await ctx.send("Track skipped.")
+        
+    #skips current song
+    async def skip(self):
+        await self.player.stop()
+
+    #delete queue
+    async def clearQueue(self):
+        stop = object()
+        await self.queue.put(stop)
+        track = self.queue.get_nowait()
+        while track is not stop:
+            track = self.queue.get_nowait()
+
+    #pauses player
+    async def pause(self):
+        await self.player.set_pause(True)
+
+    #resumes player
+    async def resume(self):
+        await self.player.set_pause(False)
+        
+    #shuffles queue
+    async def queueShuffle(self):
+        await shuffle(self.queue._queue)
 
 #bot
 @bot.event
@@ -101,33 +97,32 @@ async def on_ready():
     print('----')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
     await bot.wavelink.initiate_node(host=auth.lavaIp, port=auth.lavaPort, rest_uri=auth.lavaAddr, password=auth.lavaPw, identifier='MAIN', region='us_east')
-    global queueMap, sleeperMap
-    queueMap = {}
-    sleeperMap = {}
+    global playerMap
+    playerMap = {}
     for guild in bot.guilds:
-        queueMap[guild.id] = Player(guild)
+        playerMap[guild.id] = Player(guild)
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
     await ctx.send('Music logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
-    
-@bot.command(brief="Connects bot to voice", description="Connects bot to whatever voice channel the user is in.")
+
+@bot.command(brief="Connects bot to voice", description="Connects bot to whatever voice channel the user is in.", aliases=["connect"])
 async def hi(ctx):
-    player = queueMap[ctx.guild.id]
+    player = playerMap[ctx.guild.id]
     await player.connect(ctx)
 
-@bot.command(brief="Disconnects bot from voice", description="Disconnects bot from voice.")
+@bot.command(brief="Disconnects bot from voice", description="Disconnects bot from voice.", aliases=["disconnect"])
 async def die(ctx):
-    player = queueMap[ctx.guild.id]
-    await player.disconnect(ctx)
-    del player
-    queueMap[ctx.guild.id] = Player(ctx.guild)
+    player = playerMap[ctx.guild.id]
+    await player.clearQueue()
+    await player.disconnect()
+    await ctx.send("Disconnected.")
 
-@bot.command(brief="Plays specified song", description="Plays specified song.")
+@bot.command(brief="Plays specified song", description="Plays specified song.", aliases=["play"])
 async def p(ctx, *args):
     input = ' '.join(args[:])
-    player = queueMap[ctx.guild.id]
+    player = playerMap[ctx.guild.id]
     print(f'cmdPlay: Search query "{input}"')
     res = await bot.wavelink.get_tracks(f'ytsearch:{input}')
     if not res:
@@ -140,19 +135,50 @@ async def p(ctx, *args):
         if not player.player.is_playing:
             await player.play(ctx)
 
-@bot.command(brief="Displays the queue", description="Displays the queue.")
+@bot.command(brief="Displays the queue", description="Displays the queue.", aliases=["queue"])
 async def q(ctx):
-    player = queueMap[ctx.guild.id]
+    player = playerMap[ctx.guild.id]
     await player.getQueue(ctx)
-    
-@bot.command(brief="Displays currently playing song", description="Displays currently playing song.")
+
+@bot.command(brief="Displays currently playing song", description="Displays currently playing song.", aliases=["playing"])
 async def np(ctx):
-    player = queueMap[ctx.guild.id]
+    player = playerMap[ctx.guild.id]
     await player.nowPlaying(ctx)
 
-@bot.command(brief="Skips currently playing song", description="Skips currently playing song.")
+@bot.command(brief="Skips currently playing song", description="Skips currently playing song.", aliases=["skip"])
 async def s(ctx):
-    oldPlayer = queueMap[ctx.guild.id]
-    await skip(ctx, oldPlayer)
+    player = playerMap[ctx.guild.id]
+    await player.skip()
+    await ctx.send("Track skipped.")
+
+@bot.command(brief="Shuffles queue", description="Shuffles queue.")
+async def shuffle(ctx):
+    player = playerMap[ctx.guild.id]
+    await player.clearQueue()
+    await ctx.send("Queue has been shuffled.")
+
+@bot.command(brief="Clears queue", description="Clears queue.")
+async def clear(ctx):
+    player = playerMap[ctx.guild.id]
+    await player.clearQueue()
+    await ctx.send("Queue cleared.")
+
+@bot.command(brief="Pauses player", description="Pauses player.")
+async def pause(ctx):
+    player = playerMap[ctx.guild.id]
+    if player.is_paused():
+        await ctx.send("This player is already paused.")
+    else:
+        await player.pause()
+        await ctx.send("Player paused.")
+
+@bot.command(brief="Resumes paused player", description="Resumes paused player.")
+async def resume(ctx):
+    player = playerMap[ctx.guild.id]
+    if not player.is_paused():
+        await ctx.send("This player is already playing.")
+    else:
+        await player.resume()
+        await ctx.send("Player resumed.")
 
 bot.run(auth.TOKEN)

@@ -301,12 +301,6 @@ async def on_message(message):
                 await message.author.edit(nick = rNick)
             else:
                 rNick = message.author.display_name
-                
-#bot.listen()
-#async def on_message(message):
-    #if message.channel.guild.id == auth.space and message.author.id == auth.ming:
-        #emoji = get(bot.get_all_emojis(), name='pleading_face')
-        #await message.add_reaction(emoji)
 
 #slash command guilds (all slash commands in alpha)
 slash_guilds = [auth.zenithproject, auth.mmr, auth.space]
