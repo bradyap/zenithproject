@@ -4,7 +4,7 @@ import auth
 import wavelink
 from discord.ext import commands
 import asyncio
-from random import shuffle
+from random import shuffle as pyShuffle
 
 #discord
 bot = commands.Bot(command_prefix="$")
@@ -87,8 +87,8 @@ class Player:
         await self.player.set_pause(False)
         
     #shuffles queue
-    async def queueShuffle(self):
-        await shuffle(self.queue._queue)
+    async def shuffleQueue(self):
+        pyShuffle(self.queue._queue)
 
 #bot
 @bot.event
@@ -154,7 +154,7 @@ async def s(ctx):
 @bot.command(brief="Shuffles queue", description="Shuffles queue.")
 async def shuffle(ctx):
     player = playerMap[ctx.guild.id]
-    await player.clearQueue()
+    await player.shuffleQueue()
     await ctx.send("Queue has been shuffled.")
 
 @bot.command(brief="Clears queue", description="Clears queue.")

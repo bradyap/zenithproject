@@ -284,6 +284,7 @@ async def slhs(ctx, *args):
 #default nicknames
 bNick = "Juan"
 rNick = "PassiveStone"
+iNick = "Thoughtbow"
 
 #anti simp nick on space
 @bot.listen()
@@ -301,6 +302,12 @@ async def on_message(message):
                 await message.author.edit(nick = rNick)
             else:
                 rNick = message.author.display_name
+        if message.author.id == auth.ian:
+            global iNick
+            if message.author.display_name == "simp":
+                await message.author.edit(nick = iNick)
+            else:
+                iNick = message.author.display_name
 
 #slash command guilds (all slash commands in alpha)
 slash_guilds = [auth.zenithproject, auth.mmr, auth.space]
