@@ -166,7 +166,7 @@ async def clear(ctx):
 @bot.command(brief="Pauses player", description="Pauses player.")
 async def pause(ctx):
     player = playerMap[ctx.guild.id]
-    if player.is_paused():
+    if player.player.is_paused:
         await ctx.send("This player is already paused.")
     else:
         await player.pause()
@@ -175,7 +175,7 @@ async def pause(ctx):
 @bot.command(brief="Resumes paused player", description="Resumes paused player.")
 async def resume(ctx):
     player = playerMap[ctx.guild.id]
-    if not player.is_paused():
+    if not player.player.is_paused:
         await ctx.send("This player is already playing.")
     else:
         await player.resume()
