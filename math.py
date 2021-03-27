@@ -10,7 +10,7 @@ bot.remove_command('help')
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help")
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
