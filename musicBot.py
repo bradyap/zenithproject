@@ -5,6 +5,12 @@ import wavelink
 from discord.ext import commands
 import asyncio
 from random import shuffle as pyShuffle
+import os
+
+#os path 
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
 
 #discord
 bot = commands.Bot(command_prefix="$")

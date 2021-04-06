@@ -156,67 +156,6 @@ def spamTimer():
     timer.start()
 
 @bot.command(hidden=True)
-async def launch(ctx, item):
-    if ctx.message.author.id == auth.brady or ctx.message.author.id == 485794062448852993 or ctx.message.author.id ==558430263013670922:
-        print(f"cmdLaunch: Permission given ({ctx.message.author}). Item = {item}")
-        if item == "val":
-            process = subprocess.Popen(["C:\Riot Games\Riot Client\RiotClientServices.exe", "--launch-product=valorant", "--launch-patchline=live"])
-            await ctx.send("Attempting to launch Valorant.")   
-    else:
-        await ctx.send("You do not have permission to use this command.")
-        print(f"cmdLaunch: Permission denied ({ctx.message.author}).")
-
-@bot.command(hidden=True)
-async def join(ctx, *args):
-    subject = " ".join(args[:])
-    if ctx.message.author.id == auth.brady:
-        print(f"cmdSubject: Permission given ({ctx.message.author}). Subject = {subject}.")
-        if subject == "spanish":
-            os.system("start chrome " + auth.spanish)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "anatomy":
-            os.system("start chrome " + auth.anatomy)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "english":
-            os.system("start chrome " + auth.english)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "english stinger":
-            os.system("start chrome " + auth.englishStinger)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "precalc":
-            os.system("start chrome " + auth.precalc)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "comp sci":
-            os.system("start chrome " + auth.compSci)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "apush":
-            os.system("start chrome " + auth.apush)
-            await ctx.send(f"Joining {subject}.")
-        elif subject == "cybersecurity":
-            os.system("start chrome " + auth.cybersecurity)
-            await ctx.send(f"Joining {subject}.")
-        else:
-            await ctx.send(f"Joining {subject}.")
-    else:
-        await ctx.send("You do not have permission to use this command.")
-        print(f"cmdAdd: Permission denied ({ctx.message.author}). Subject = {subject}.")
-
-@bot.command(hidden=True)
-async def cmd(ctx, *args):
-    input = " ".join(args[:])
-    if ctx.message.author.id == auth.brady: 
-        print(f"cmdCmd: Permission given ({ctx.message.author}). Input = {input}.")
-        stream = os.popen(input)
-        output = stream.read()
-        try:
-            await ctx.send(output)
-        except HTTPException:
-            await ctx.send("No output. Check command and try again.")
-    else: 
-        await ctx.send("You do not have permission to use this command.")
-        print(f"cmdAdd: Permission denied ({ctx.message.author}). Input = {input}.")
-
-@bot.command(hidden=True)
 async def drive(ctx, time, unit, tod):
     if ctx.message.author.id == auth.brady:
         print(f"cmdAdd: Permission given ({ctx.message.author}).")

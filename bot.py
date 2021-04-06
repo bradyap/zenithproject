@@ -10,6 +10,12 @@ from google.cloud import translate_v2 as translate
 import resources
 from discord import Member
 import random
+import os
+
+#os path 
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
 
 #wolfram alpha
 wclient = wolframalpha.Client(auth.appId)
