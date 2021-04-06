@@ -3,19 +3,15 @@ import discord
 import auth
 from discord.errors import HTTPException
 from discord.ext import commands
-from notion.client import NotionClient
-from threading import Timer
 import subprocess
-from datetime import datetime
-from discord_slash import SlashCommand, SlashContext
-from discord.utils import get
 
-#notion
-nclient = NotionClient(auth.token_v2)
+#os path 
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
 
 #discord
 bot = commands.Bot(command_prefix="$")
-slash = SlashCommand(bot, sync_commands=True)
 bot.remove_command('help')
 
 @bot.event

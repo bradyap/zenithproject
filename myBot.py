@@ -10,6 +10,11 @@ from datetime import datetime
 from discord_slash import SlashCommand, SlashContext
 from discord.utils import get
 
+#os path 
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
 #notion
 nclient = NotionClient(auth.token_v2)
 
