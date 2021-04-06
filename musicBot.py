@@ -70,8 +70,11 @@ class Player:
 
     #prints currently playing song
     async def nowPlaying(self, ctx):
-        await ctx.send(self.playing)
-        
+        embed = discord.Embed(title="Now Playing")
+        await embed.add_field(name="u200b", value=self.playing)
+        await embed.set_thumbnail(self.playing.thumb)
+        await ctx.send(embed=embed)
+
     #skips current song
     async def skip(self):
         await self.player.stop()

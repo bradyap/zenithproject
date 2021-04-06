@@ -212,18 +212,18 @@ async def hhs(ctx, *args):
     print("cmdHHS")
     input = " ".join(args[:])
     if input == "2hr":
-        await ctx.send(file=discord.File("./images/hhs2hr.png"))
+        await ctx.send(file=discord.File("images\hhs2hr.png"))
     else:
-        await ctx.send(file=discord.File("./images/hhs.png"))
+        await ctx.send(file=discord.File("images\hhs.png"))
     
 @bot.command(hidden=True)
 async def slhs(ctx, *args):
     print("cmdSLHS")
     input = " ".join(args[:])
     if input == "2hr":
-        await ctx.send(file=discord.File("./images/slhs2hr.png"))
+        await ctx.send(file=discord.File("images\slhs2hr.png"))
     else:
-        await ctx.send(file=discord.File("./images/slhs.png"))
+        await ctx.send(file=discord.File("images\slhs.png"))
             
 #default nicknames
 bNick = "Juan"
