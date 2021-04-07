@@ -4,6 +4,7 @@ import auth
 from discord.errors import HTTPException
 from discord.ext import commands
 import subprocess
+from discord.ext.commands import CommandNotFound
 
 #os path 
 abspath = os.path.abspath(__file__)
@@ -24,6 +25,12 @@ async def on_ready():
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
     await ctx.send('Local logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    raise error
 
 @bot.command(hidden=True)
 async def launch(ctx, item):
