@@ -6,6 +6,7 @@ from discord.ext import commands
 import asyncio
 from random import shuffle as pyShuffle
 import os
+from discord.ext.commands import CommandNotFound
 
 #os path 
 abspath = os.path.abspath(__file__)
@@ -32,10 +33,10 @@ class Player:
         if not self.player.is_connected:
             try:
                 channel = ctx.author.voice.channel
-                await ctx.send(f"Connecting to {channel.name}.")
+                await ctx.send(f"`Connecting to {channel.name}.`")
                 await self.player.connect(channel.id)
             except AttributeError:
-                await ctx.send("Please join a voice channel.")
+                await ctx.send("`Please join a voice channel.`")
 
     #disconnect
     async def disconnect(self):
@@ -43,23 +44,34 @@ class Player:
 
     #prints queue
     async def getQueue(self, ctx):
-        embed = discord.Embed(title="Music Queue")
+        #embed = discord.Embed(title="Music Queue")
         stop = object()
         track = object()
         await self.queue.put(stop)
         track = self.queue.get_nowait()
+        out = "```fix\nQueue:"
+        i = 1
         while track is not stop:
-            embed.add_field(name='\u200b', inline=False, value=track)
+            #embed.add_field(name=track, inline=False, value='\u200b')
+            out += "\n" + str(i) + ") " + track.title
+            i += 1
             await self.queue.put(track)
             track = self.queue.get_nowait()
-        await ctx.send(embed=embed)
+        #await ctx.send(embed=embed)
+        await ctx.send(out + "\n```")
 
     #plays queue
     async def play(self, ctx):
         while True:
             try:
                 track = self.queue.get_nowait()
-                await ctx.send(f'Now playing: {track}.')
+                embed = discord.Embed(title="Now Playing", description=track)
+                embed = discord.Embed(title="Now Playing", url=track.uri, description=track)
+                try:
+                    embed.set_thumbnail(url=track.thumb)
+                except:
+                    pass
+                await ctx.send(embed=embed)
                 await self.player.play(track)
                 self.playing = track
                 while self.player.is_playing:
@@ -70,9 +82,15 @@ class Player:
 
     #prints currently playing song
     async def nowPlaying(self, ctx):
-        embed = discord.Embed(title="Now Playing")
-        await embed.add_field(name="u200b", value=self.playing)
-        await embed.set_thumbnail(self.playing.thumb)
+        embed = discord.Embed(title="Now Playing", description=self.playing)
+        try:
+            embed = discord.Embed(title="Now Playing", url=self.playing.uri, description=self.playing)
+            try:
+                embed.set_thumbnail(url=self.playing.thumb)
+            except:
+                pass
+        except:
+            embed = discord.Embed(title="Now Playing", description=self.playing)
         await ctx.send(embed=embed)
 
     #skips current song
@@ -111,6 +129,12 @@ async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    raise error
+
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
@@ -126,7 +150,7 @@ async def die(ctx):
     player = playerMap[ctx.guild.id]
     await player.clearQueue()
     await player.disconnect()
-    await ctx.send("Disconnected.")
+    await ctx.send("`Disconnected.`")
 
 @bot.command(brief="Plays specified song", description="Plays specified song.", aliases=["play"])
 async def p(ctx, *args):
@@ -135,21 +159,26 @@ async def p(ctx, *args):
     print(f'cmdPlay: Search query "{input}"')
     res = await bot.wavelink.get_tracks(f'ytsearch:{input}')
     if not res:
-        await ctx.send('Could not find any songs with that query.')
+        await ctx.send('`Could not find any songs with that query.`')
     else:
-        #adds track to queue
         await player.queue.put(res[0])
-        await ctx.send(f'Added {str(res[0])} to the queue.')
         await player.connect(ctx)
         if not player.player.is_playing:
             await player.play(ctx)
+        else:
+            embed = discord.Embed(title="Added to Queue", url=res[0].uri, description=res[0])
+            try:
+                embed.set_thumbnail(url=res[0].thumb)
+            except:
+                pass
+            await ctx.send(embed=embed)
 
 @bot.command(brief="Displays the queue", description="Displays the queue.", aliases=["queue"])
 async def q(ctx):
     player = playerMap[ctx.guild.id]
     await player.getQueue(ctx)
 
-@bot.command(brief="Displays currently playing song", description="Displays currently playing song.", aliases=["playing"])
+@bot.command(brief="Displays currently playing song", description="Displays currently playing song.", aliases=["playing", "nowplaying", "song"])
 async def np(ctx):
     player = playerMap[ctx.guild.id]
     await player.nowPlaying(ctx)
@@ -158,36 +187,36 @@ async def np(ctx):
 async def s(ctx):
     player = playerMap[ctx.guild.id]
     await player.skip()
-    await ctx.send("Track skipped.")
+    await ctx.send("`Track skipped.`")
 
 @bot.command(brief="Shuffles queue", description="Shuffles queue.")
 async def shuffle(ctx):
     player = playerMap[ctx.guild.id]
     await player.shuffleQueue()
-    await ctx.send("Queue has been shuffled.")
+    await ctx.send("`Queue shuffled`")
 
 @bot.command(brief="Clears queue", description="Clears queue.")
 async def clear(ctx):
     player = playerMap[ctx.guild.id]
     await player.clearQueue()
-    await ctx.send("Queue cleared.")
+    await ctx.send("`Queue cleared.`")
 
 @bot.command(brief="Pauses player", description="Pauses player.")
 async def pause(ctx):
     player = playerMap[ctx.guild.id]
     if player.player.is_paused:
-        await ctx.send("This player is already paused.")
+        await ctx.send("`This player is already paused.`")
     else:
         await player.pause()
-        await ctx.send("Player paused.")
+        await ctx.send("`Player paused.`")
 
-@bot.command(brief="Resumes paused player", description="Resumes paused player.")
+@bot.command(brief="Resumes paused player", description="Resumes paused player.", aliases=["unpause"])
 async def resume(ctx):
     player = playerMap[ctx.guild.id]
     if not player.player.is_paused:
-        await ctx.send("This player is already playing.")
+        await ctx.send("`This player is already playing.`")
     else:
         await player.resume()
-        await ctx.send("Player resumed.")
+        await ctx.send("`Player resumed.`")
 
 bot.run(auth.TOKEN)

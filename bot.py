@@ -11,6 +11,10 @@ import resources
 from discord import Member
 import random
 import os
+from discord.ext.commands import CommandNotFound
+from PIL import Image, ImageOps, ImageFilter
+import requests
+from io import BytesIO
 
 #os path 
 abspath = os.path.abspath(__file__)
@@ -36,7 +40,13 @@ bot.help_command = HelpCommand
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="music | $help"))
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    raise error
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
@@ -219,21 +229,38 @@ async def translate(ctx, langInput, *input):
         await ctx.send(embed=embed)
 
 @bot.command(brief="Returns image of the specified user's profile picture", description="Returns image of the specified user's profile picture. Defaults to message sender.")
-async def pfp(ctx, member: Member = None):
+async def pfp(ctx, *args):
     print(f"cmdPfp: Permission given ({ctx.message.author}).")
-    if not member:
-        member = ctx.author 
-    await ctx.send(member.avatar_url_as(size=512))
-            
+    if len(ctx.message.mentions) > 0:
+        member = ctx.message.mentions[0]
+        #await ctx.send(member)
+        #args2 = args[1:]
+        #await ctx.send(args2)
+    else:
+        member = ctx.message.author  
+        #await ctx.send(member)      
+        #await ctx.send(args)
+    try:
+        if args[0] == "inv" or args[0] == "invert":
+            res = requests.get(member.avatar_url)
+            image = Image.open(BytesIO(res.content)).convert('RGB')
+            out = ImageOps.invert(image)
+            with BytesIO() as imageBinary:
+                out.save(imageBinary, 'PNG')
+                imageBinary.seek(0)
+                await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
+    except:
+        await ctx.send(member.avatar_url_as(size=512))
+
 @bot.command(brief="Delete a chosen number of messages", description="Delete a chosen number of messages. Command usable by those with manage messages permission.")
 async def purge(ctx, num):
-        clear = int(num) + 1
-        if ctx.message.author.guild_permissions.manage_messages:
-            print(f"cmdPurge: Permission given ({ctx.message.author}). Messages cleared = " + str(clear) + ".")
-            await ctx.channel.purge(limit=clear)
-        else: 
-            print(f"cmdPurge: Permission denied ({ctx.message.author}).")
-            await ctx.send("You do not have permission to use this command.")
+    clear = int(num) + 1
+    if ctx.message.author.guild_permissions.manage_messages:
+        print(f"cmdPurge: Permission given ({ctx.message.author}). Messages cleared = " + str(clear) + ".")
+        await ctx.channel.purge(limit=clear)
+    else: 
+        print(f"cmdPurge: Permission denied ({ctx.message.author}).")
+        await ctx.send("You do not have permission to use this command.")
 
 @bot.command(brief="Creates an invite to this server", description="Creates an invite to this server.")
 async def invite(ctx):

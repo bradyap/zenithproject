@@ -9,6 +9,9 @@ import subprocess
 from datetime import datetime
 from discord_slash import SlashCommand, SlashContext
 from discord.utils import get
+import subprocess
+from discord.ext.commands import CommandNotFound
+from discord import Member
 
 #os path 
 abspath = os.path.abspath(__file__)
@@ -27,7 +30,12 @@ bot.remove_command('help')
 async def on_ready():
     print('Logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
     print('----')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="$help"))
+    
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        return
+    raise error
 
 @bot.command(hidden=True, brief="Returns bot state")
 async def info(ctx):
@@ -35,7 +43,7 @@ async def info(ctx):
     await ctx.send('Personal logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
 
 @bot.command(brief="Changes bot status", description="Changes bot status. Command useable by select people.")
-async def status(ctx, actType, *, actName = None):
+async def changeStatus(ctx, actType, *, actName = None):
     if ctx.message.author.id == auth.brady:
         print(f"cmdStatus: Permission given ({ctx.message.author}).")
         if actType == "playing":
@@ -212,18 +220,18 @@ async def hhs(ctx, *args):
     print("cmdHHS")
     input = " ".join(args[:])
     if input == "2hr":
-        await ctx.send(file=discord.File("images\hhs2hr.png"))
+        await ctx.send(file=discord.File("./images/hhs2hr.png"))
     else:
-        await ctx.send(file=discord.File("images\hhs.png"))
+        await ctx.send(file=discord.File("./images/hhs.png"))
     
 @bot.command(hidden=True)
 async def slhs(ctx, *args):
     print("cmdSLHS")
     input = " ".join(args[:])
     if input == "2hr":
-        await ctx.send(file=discord.File("images\slhs2hr.png"))
+        await ctx.send(file=discord.File("./images/slhs2hr.png"))
     else:
-        await ctx.send(file=discord.File("images\slhs.png"))
+        await ctx.send(file=discord.File("./images/slhs.png"))
             
 #default nicknames
 bNick = "Juan"
