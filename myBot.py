@@ -232,47 +232,14 @@ async def slhs(ctx, *args):
         await ctx.send(file=discord.File("./images/slhs2hr.png"))
     else:
         await ctx.send(file=discord.File("./images/slhs.png"))
-            
-#default nicknames
-bNick = "Juan"
-rNick = "PassiveStone"
-iNick = "Thoughtbow"
-aNick = "Tofufu"
 
-#anti simp nick on space
-@bot.listen()
-async def on_message(message):
-    if message.channel.guild.id == auth.space:
-        if message.author.id == auth.brady:
-            global bNick
-            if message.author.display_name == "simp":
-                await message.author.edit(nick = bNick)
-            else:
-                bNick = message.author.display_name
-        if message.author.id == auth.remi:
-            global rNick
-            if message.author.display_name == "simp":
-                await message.author.edit(nick = rNick)
-            else:
-                rNick = message.author.display_name
-        if message.author.id == auth.ian:
-            global iNick
-            if message.author.display_name == "simp":
-                await message.author.edit(nick = iNick)
-            else:
-                iNick = message.author.display_name
-        if message.author.id == auth.ash:
-            global aNick
-            if message.author.display_name == "simp":
-                await message.author.edit(nick = aNick)
-            else:
-                aNick = message.author.display_name
-
-#slash command guilds (all slash commands in alpha)
-slash_guilds = [auth.zenithproject, auth.mmr, auth.space]
-    
-@slash.slash(name="info")
-async def _info(ctx):
-    await ctx.send('Personal - logged in as {0} ({0.id})'.format(bot.user))
+@slash.slash(name="confess",guild_ids=[auth.mmr],description="Anonymous confessions. Type your confession following the command.")
+async def _confess(ctx, *confession):
+    input = ' '.join(confession[:])
+    channel = bot.get_channel(835149061576589362)
+    embed = discord.Embed(title="Anonymous Confession",description=input,color=0xffa5ea)
+    embed.timestamp = datetime.now()
+    await channel.send(embed=embed)
+    await ctx.send(hidden=True, content="Your confession has been sent to " + channel.mention + "!")
 
 bot.run(auth.TOKEN)
