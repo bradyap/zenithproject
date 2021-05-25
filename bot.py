@@ -677,4 +677,43 @@ async def palette(ctx, num):
         imageBinary.seek(0)
         await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
 
+@bot.command(brief="Sets a timer for the specified amount of time", description="Sets a timer for the specified amount of time.", aliases=["t"])
+async def timer(ctx, time, unit):
+    print(f"cmdTimer: Permission given ({ctx.author}).")
+    user = ctx.message.author
+    await ctx.send(f"Timer set for {time} {unit}.")
+    if str(unit) == "second" or str(unit) == "seconds" or str(unit) == "sec" or str(unit) == "secs":
+        time = int(time)
+    elif str(unit) == "hour" or str(unit) == "hours" or str(unit) == "hr" or str(unit) == "hrs":
+        time = int(time) * 3600
+    elif str(unit) == "day" or str(unit) == "days":
+        time = int(time) * 86400
+    else:
+        time = int(time) * 60
+    await timerObject(ctx, time, user)
+
+async def timerObject(ctx, time, user):
+    await asyncio.sleep(time)
+    await ctx.send(f"{user.mention}, your timer has expired.")
+    
+@bot.command(brief="Reminds you to do something in a specified amount of time", description="Reminds you to do something in a specified amount of time.")
+async def remind(ctx, time, unit, *input):
+    print(f"cmdTimer: Permission given ({ctx.author}).")
+    input = ' '.join(input[:])
+    user = ctx.message.author
+    await ctx.send(f"Reminder set for {time} {unit} from now.")
+    if str(unit) == "second" or str(unit) == "seconds" or str(unit) == "sec" or str(unit) == "secs":
+        time = int(time)
+    elif str(unit) == "hour" or str(unit) == "hours" or str(unit) == "hr" or str(unit) == "hrs":
+        time = int(time) * 3600
+    elif str(unit) == "day" or str(unit) == "days":
+        time = int(time) * 86400
+    else:
+        time = int(time) * 60
+    await remindObject(ctx, time, user, input)
+
+async def remindObject(ctx, time, user, input):
+    await asyncio.sleep(time)
+    await ctx.send(f"{user.mention}, {input}.")
+
 bot.run(auth.TOKEN)
