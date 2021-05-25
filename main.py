@@ -139,11 +139,11 @@ async def slash(ctx, mod, *args):
         if mod == "list":
             if input: gid = input
             else: gid = None
-            await ctx.send(await discord_slash.utils.manage_commands.get_all_commands(bot_id="710700921952141393",bot_token="NzEwNzAwOTIxOTUyMTQxMzkz.Xr4Rzw.igBxMck66k_mCj4lpOTDnayUFC4",guild_id=gid))
+            await ctx.send(await discord_slash.utils.manage_commands.get_all_commands(bot_id="710700921952141393",bot_token=auth.TOKEN,guild_id=gid))
         elif mod == "remove":
             if input: gid = input
             else: gid = None
-            await discord_slash.utils.manage_commands.remove_all_commands(bot_id="710700921952141393",bot_token="NzEwNzAwOTIxOTUyMTQxMzkz.Xr4Rzw.igBxMck66k_mCj4lpOTDnayUFC4",guild_ids=[gid])
+            await discord_slash.utils.manage_commands.remove_all_commands(bot_id="710700921952141393",bot_token=auth.TOKEN,guild_ids=[gid])
         else:
             await ctx.send("Modifier not recognized. Please try again.")
     else:
