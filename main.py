@@ -7,6 +7,7 @@ from notion.client import NotionClient
 from threading import Timer
 import subprocess
 from datetime import datetime
+import discord_slash
 from discord_slash import SlashCommand, SlashContext
 from discord.utils import get
 import subprocess
@@ -20,6 +21,7 @@ os.chdir(dname)
 
 #discord
 bot = commands.Bot(command_prefix="$")
+slash = SlashCommand(bot, sync_commands=True)
 bot.remove_command('help')
 
 @bot.event
@@ -128,5 +130,24 @@ async def reboot(ctx):
     else: 
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdAdd: Permission denied ({ctx.message.author}).")
+
+@bot.command(hidden=True)
+async def slash(ctx, mod, *args):
+    input = " ".join(args[:])
+    if ctx.message.author.id == auth.brady:
+        print(f"cmdSlash: Permission given ({ctx.message.author}). Modifier = {mod}.")
+        if mod == "list":
+            if input: gid = input
+            else: gid = None
+            await ctx.send(await discord_slash.utils.manage_commands.get_all_commands(bot_id="710700921952141393",bot_token="NzEwNzAwOTIxOTUyMTQxMzkz.Xr4Rzw.igBxMck66k_mCj4lpOTDnayUFC4",guild_id=gid))
+        elif mod == "remove":
+            if input: gid = input
+            else: gid = None
+            await discord_slash.utils.manage_commands.remove_all_commands(bot_id="710700921952141393",bot_token="NzEwNzAwOTIxOTUyMTQxMzkz.Xr4Rzw.igBxMck66k_mCj4lpOTDnayUFC4",guild_ids=[gid])
+        else:
+            await ctx.send("Modifier not recognized. Please try again.")
+    else:
+        await ctx.send("You do not have permission to use this command.")
+        print(f"cmdSlash: Permission denied ({ctx.message.author}). Modifier = {mod}.")
 
 bot.run(auth.TOKEN)

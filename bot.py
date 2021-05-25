@@ -1,3 +1,4 @@
+from types import ClassMethodDescriptorType
 import discord
 import auth
 from discord.ext import commands
@@ -15,6 +16,18 @@ from discord.ext.commands import CommandNotFound
 from PIL import Image, ImageOps, ImageFilter
 import requests
 from io import BytesIO
+from discord_slash import SlashCommand, SlashContext
+import cryptography
+from cryptography.fernet import Fernet
+import json
+from datetime import datetime
+import binascii
+import struct
+import numpy as np
+import scipy
+import scipy.misc
+import scipy.cluster
+from colorthief import ColorThief
 
 #os path 
 abspath = os.path.abspath(__file__)
@@ -29,12 +42,58 @@ translate_client = translate.Client.from_service_account_json("DiscordBot-b0d16f
 
 #discord
 bot = commands.Bot(command_prefix="$")
+slash = SlashCommand(bot, sync_commands=True)
 
 #help command
-HelpCommand = commands.DefaultHelpCommand(
-    no_category = "Commands"
-)
+HelpCommand = commands.DefaultHelpCommand(no_category = "General Commands")
 bot.help_command = HelpCommand
+
+#encryption
+#key = Fernet.generate_key()
+#with open('confessions.key', 'wb') as f:
+    #f.write(key)
+with open('confessions.key', 'rb') as f:
+    key = f.read()
+fernet = Fernet(key)
+global confessBanned
+confessBanned = []
+
+global confessLogs
+confessLogs = {}
+global confessCooldowns
+confessCooldowns = {}
+global confessMuted
+confessMuted = []
+global confessToggle
+confessToggle = True
+global confessTesting
+confessTesting = False
+
+def encrypt(fileName):
+    fernet = Fernet(key)
+    with open (fileName, 'rb') as f:
+        encrypted = fernet.encrypt(f.read())
+    with open (fileName, 'wb') as f:
+        f.write(encrypted)
+
+def decrypt(fileName):
+    fernet = Fernet(key)
+    with open (fileName, 'rb') as f:
+        decrypted = fernet.decrypt(f.read())
+    with open (fileName, 'wb') as f:
+        f.write(decrypted)
+        
+try:    
+    with open ('confessBanned.json') as f:
+        confessBanned = json.load(f)
+    encrypt('confessBanned.json')
+except: 
+    try: 
+        decrypt('confessBanned.json')
+        with open ('confessBanned.json') as f:
+            confessBanned = json.load(f)
+        encrypt('confessBanned.json')
+    except: pass
 
 @bot.event
 async def on_ready():
@@ -48,7 +107,7 @@ async def on_command_error(ctx, error):
         return
     raise error
 
-@bot.command(hidden=True, brief="Returns bot state")
+@bot.command(brief="Returns bot state", description="Returns bot state.")
 async def info(ctx):
     print(f"cmdInfo: Permission given ({ctx.message.author}).")
     await ctx.send('Release logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
@@ -74,7 +133,7 @@ async def kick(ctx, member:discord.Member):
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdKick: Permission denied ({ctx.message.author}).")
 
-@bot.command(brief="Changes mentioned user's nickname")
+@bot.command(brief="Changes mentioned user's nickname", description="Changes mentioned user's nickname.")
 async def nick(ctx, user, *args):
     if ctx.message.author.guild_permissions.manage_nicknames:
         print(f"cmdNick: Permission given ({ctx.message.author}). ")
@@ -89,7 +148,7 @@ async def nick(ctx, user, *args):
         print(f"cmdNick: Permission given ({ctx.message.author}). ")
         await ctx.send("You do not have permission to use this command.")
 
-@bot.command(brief="Mutes mentioned user in text channels")
+@bot.command(brief="Mutes mentioned user in text channels", description="Mutes mentioned user in text channels.")
 async def mute(ctx):
     if ctx.message.author.guild_permissions.mute_members:
         print(f"cmdMute: Permission given ({ctx.message.author}).")
@@ -123,7 +182,7 @@ async def mute(ctx):
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdMute: Permission denied ({ctx.message.author}).")
 
-@bot.command(brief="Unmutes previously muted user")
+@bot.command(brief="Unmutes previously muted user", description="Unmutes previously muted user.")
 async def unmute(ctx):
     if ctx.message.author.guild_permissions.mute_members:
         print(f"cmdUnmute: Permission given ({ctx.message.author}).")
@@ -233,24 +292,38 @@ async def pfp(ctx, *args):
     print(f"cmdPfp: Permission given ({ctx.message.author}).")
     if len(ctx.message.mentions) > 0:
         member = ctx.message.mentions[0]
-        #await ctx.send(member)
-        #args2 = args[1:]
-        #await ctx.send(args2)
     else:
-        member = ctx.message.author  
-        #await ctx.send(member)      
-        #await ctx.send(args)
-    try:
-        if args[0] == "inv" or args[0] == "invert":
-            res = requests.get(member.avatar_url)
-            image = Image.open(BytesIO(res.content)).convert('RGB')
-            out = ImageOps.invert(image)
-            with BytesIO() as imageBinary:
-                out.save(imageBinary, 'PNG')
-                imageBinary.seek(0)
-                await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
-    except:
-        await ctx.send(member.avatar_url_as(size=512))
+        member = ctx.message.author
+    if args:
+        res = requests.get(member.avatar_url, size=512)
+        image = Image.open(BytesIO(res.content)).convert('RGB')
+            
+        for i in args:
+            if i == "inv" or i == "invert" or i == "ivt":
+                image = ImageOps.invert(image)
+            elif i == "blur":
+                image = image.filter(ImageFilter.BLUR)
+            elif i == "contour":
+                image = image.filter(ImageFilter.CONTOUR)
+            elif i == "emboss":
+                image = image.filter(ImageFilter.EMBOSS)
+            elif i == "edges":
+                image = image.filter(ImageFilter.FIND_EDGES)
+            elif i == "communism":
+                filter = Image.open(r"./images/communism.jpg")
+                image.paste(filter, (0, 0))
+                    
+        with BytesIO() as imageBinary:
+            image.save(imageBinary, 'PNG')
+            imageBinary.seek(0)
+            await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
+    else: 
+        await sendAsEmbed(ctx, member)
+
+async def sendAsEmbed(ctx, member):
+    embed = discord.Embed()
+    embed.set_image(url=member.avatar_url_as(size=512))
+    await ctx.send(embed=embed)
 
 @bot.command(brief="Delete a chosen number of messages", description="Delete a chosen number of messages. Command usable by those with manage messages permission.")
 async def purge(ctx, num):
@@ -316,5 +389,292 @@ async def pickup(ctx, member:discord.Member):
     print("cmdPickup")
     line = random.choice(resources.pickupLines).replace("{name}", member.mention).replace("{author}", ctx.author.mention)
     await ctx.send(line)
+
+@bot.command(brief="Flips a coin", description="Flips a coin.")
+async def coinflip(ctx):
+    print("cmdCoinflip")
+    res = random.choice(["Heads.", "Tails."])
+    await ctx.send(res)
+
+@bot.command(brief="Picks a random choice from a list of inputs separated by commas", description="Picks a random choice from a list of inputs separated by commas.")
+async def randomchoice(ctx, *args):
+    print("cmdRandomchoice")
+    choices = ' '.join(args[:]).split(',')
+    res = random.choice(choices)
+    await ctx.send(res)
+
+@bot.command(brief="Returns schedule for specified school (hhs, slhs)", description="Returns schedule for specified school (hhs, slhs).")
+async def bell(ctx, school, *args):
+    print("cmdBell")
+    input = " ".join(args[:])
+    if school == "hhs" or school == "HHS":
+        if input == "2hr" or input == "early release":
+            await ctx.send(file=discord.File("./images/hhs2hr.png"))
+        else:
+            await ctx.send(file=discord.File("./images/hhs.png"))
+    if school == "slhs" or school == "SLHS":
+        if input == "2hr" or input == "early release":
+            await ctx.send(file=discord.File("./images/slhs2hr.png"))
+        else:
+            await ctx.send(file=discord.File("./images/slhs.png"))
+
+@bot.command(hidden=True)
+async def confessmute(ctx, id, time, unit):
+    if ctx.author.guild_permissions.mute_members:
+        print(f"cmdConfessmute: Permission given ({ctx.author}).")
+        global confessLogs
+        global confessMuted
+        if id.startswith("https"):
+            id = str(id.rsplit('/', 1)[-1])
+        if str(unit) == "minute" or str(unit) == "minutes" or str(unit) == "min" or str(unit) == "mins":
+            time = round(float(time) / 60, 2)
+        confessMuted.append(confessLogs.get(id))
+        await ctx.send(f"Author of message ID \"{id}\" has been anonymously muted for {time} hour(s).")
+        await confessMuteTimer(id, time)
+    else:
+        await ctx.send("You do not have permission to use this command.")
+        print(f"cmdConfessmute: Permission denied ({ctx.author}).")
+
+async def confessMuteTimer(id, time):
+    global confessLogs
+    global confessMuted
+    time = time * 3600
+    await asyncio.sleep(time)
+    confessMuted.remove(confessLogs.get(id))
+
+@bot.command(hidden=True)
+async def confessban(ctx, id):
+    if ctx.author.guild_permissions.mute_members:
+        print(f"cmdConfessmute: Permission given ({ctx.author}).")
+        fernet = Fernet(key)
+        global confessLogs
+        global confessBanned
+        if id.startswith("https"):
+            id = str(id.rsplit('/', 1)[-1])
+        try:    
+            with open ('confessBanned.json') as f:
+                confessBanned = json.load(f)
+        except: 
+            try: 
+                decrypt('confessBanned.json')
+                with open ('confessBanned.json') as f:
+                    confessBanned = json.load(f)
+            except: pass
+        if id in confessLogs:
+            if not confessLogs.get(id) in confessBanned: confessBanned.append(confessLogs.get(id))
+            await ctx.send(f"Author of message ID \"{id}\" has been permanently banned from use of the confess command.")
+        else: 
+            await ctx.send("Message id could not be found. Please try again.")
+        with open ('confessBanned.json', 'w') as f:
+            json.dump(confessBanned, f)
+        encrypt('confessBanned.json')
+    else:
+        await ctx.send("You do not have permission to use this command.")
+        print(f"cmdConfessmute: Permission denied ({ctx.author}).")
+
+@bot.command(hidden=True)
+async def confesstesting(ctx):
+    if ctx.author.id == auth.brady:
+        global confessTesting
+        if confessTesting == False:
+            confessTesting = True
+            await ctx.send("Testing mode set to true.")
+        else:
+            confessTesting = False
+            await ctx.send("Testing mode set to false.")
+    else:
+        await ctx.send("You do not have permission to use this command.")
+        print(f"cmdConfesstesting: Permission denied ({ctx.author}).")
+
+@bot.command(hidden=True)
+async def confesstoggle(ctx):
+    if ctx.author.guild_permissions.mute_members:
+        print(f"cmdConfesstoggle: Permission given ({ctx.author}).")
+        global confessToggle
+        if confessToggle == False:
+            confessToggle = True
+            await ctx.send("Confessions enabled.")
+        else:
+            confessToggle = False
+            await ctx.send("Confessions disabled.")
+    else:
+        await ctx.send("You do not have permission to use this command.")
+        print(f"cmdConfesstoggle: Permission denied ({ctx.author}).")
+
+@slash.slash(name="confess",guild_ids=[auth.mmr],description="Anonymous confessions. Type your confession following the command.")
+async def _confess(ctx, *confession):
+    if confessToggle == True:
+        global confessBanned
+        if not ctx.author.id in confessBanned:
+            global confessMuted
+            if not ctx.author.id in confessMuted:
+                global confessCooldowns
+                try: 
+                    dif = (datetime.now() - confessCooldowns.get(ctx.author.id))
+                    delta = dif.total_seconds()
+                except: delta = 300
+                if delta >= 300:
+                    global confessLogs
+                    global confessTesting
+                    input = ' '.join(confession[:])
+                    if confessTesting == True:
+                        channel = bot.get_channel(700802727764295771)
+                    else:
+                        channel = bot.get_channel(835149061576589362)
+                    embed = discord.Embed(title="Anonymous Confession",description=input,color=0xffa5ea)
+                    embed.timestamp = datetime.now()
+                    msg = await channel.send(embed=embed)
+                    embed.set_footer(text="ID: " + str(msg.id))
+                    await msg.edit(embed=embed) 
+                    await ctx.send(hidden=True, content="Your confession has been sent to " + channel.mention + "!")
+                    confessLogs.update({str(msg.id): ctx.author.id})
+                    confessCooldowns.update({ctx.author.id: datetime.now()})
+                else:
+                    time = (str)((int)(4 - (delta // 60))) + " minute(s) and " + (str)(60 - (round(delta % 60))) + " second(s) " 
+                    await ctx.send(hidden=True, content="You must wait " + time + "to use this command again.")
+            else: await ctx.send(hidden=True, content="You have been temporarily muted from using the confess command. These mutes are anonymous and no admin or mod has the ability to unmute you until the timer expires. Please try again later.")
+        else: await ctx.send(hidden=True, content="You have been permanently banned from using this command. Bans are anonymous, no mod or admin has the ability to unban you. In the future, think before you speak.")    
+    else: await ctx.send(hidden=True, content="Confessions have been disabled on this server. Message a mod or an admin if you think this is a mistake. Please try again later.")
+
+@bot.command(brief="Returns preview of colors", description="Returns preview of colors.", aliases=["c"])
+async def color(ctx, *args):
+    images = []
+    stops = []
+    for i in args:
+        hex = i.lstrip('#')
+        rgb = tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+        image = Image.new('RGB', (50, 50), rgb)
+        images.append(image)
+    for i in range(100, 0, -1):
+        if len(images) >= i ** 2 and len(images) % i == 0:
+            height = i * 50
+            width = int(len(images) / i) * 50
+            for j in range(1, i):
+                stops.append(int(len(images) / i * j))
+            break
+    
+    #print(str(width) + " , " + str(height))
+    output = Image.new('RGB', (width, height))
+    xOffset = 0
+    yOffset = 0
+    index = 0
+    for image in images:
+        for stop in stops:
+            if index == stop:
+                yOffset += 50
+                xOffset = 0
+        #print(str(xOffset) + " , " + str(yOffset))
+        output.paste(image, (xOffset, yOffset))
+        xOffset += image.size[0]
+        index += 1
+    with BytesIO() as imageBinary:
+        output.save(imageBinary, 'PNG')
+        imageBinary.seek(0)
+        await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
+
+#alpha
+@bot.command(brief="Returns a collage of the inputted pictures", description="Returns a collage of the inputted pictures")
+async def collage(ctx):
+    images = []
+    stops = []
+    for i in ctx.message.attachments:
+        res = requests.get(i.url)
+        image = Image.open(BytesIO(res.content)).convert('RGB')
+        images.append(image)
+    for i in range(100, 0, -1):
+        if len(images) >= i ** 2 and len(images) % i == 0:
+            height = i * 50
+            width = int(len(images) / i) * 50
+            for j in range(1, i):
+                stops.append(int(len(images) / i * j))
+            break
+    #print(str(width) + " , " + str(height))
+    output = Image.new('RGB', (width, height))
+    xOffset = 0
+    yOffset = 0
+    index = 0
+    for image in images:
+        for stop in stops:
+            if index == stop:
+                yOffset += 50
+                xOffset = 0
+        #print(str(xOffset) + " , " + str(yOffset))
+        output.paste(image, (xOffset, yOffset))
+        xOffset += image.size[0]
+        index += 1
+    with BytesIO() as imageBinary:
+        output.save(imageBinary, 'PNG')
+        imageBinary.seek(0)
+        await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
+
+@bot.command(hidden=True, brief="Returns the most used colors in an image", description="Returns the most used colors in an image.")
+async def pal2(ctx):
+    clusters = 5
+    res = requests.get(ctx.message.attachments[0].url)
+    image = Image.open(BytesIO(res.content)).convert('RGB')
+    image = image.resize((256, 256))
+    array = np.asarray(image)
+    shape = array.shape
+    array = array.reshape(np.product(shape[:2]), shape[2]).astype(float)
+    codes, dist = scipy.cluster.vq.kmeans(array, clusters)
+    vecs, dist = scipy.cluster.vq.vq(array, codes)        
+    counts, bins = np.histogram(vecs, len(codes))    
+    max = np.argmax(counts)                    
+    peak = codes[max]
+    hex = binascii.hexlify(bytearray(int(c) for c in peak)).decode('ascii')
+    await ctx.send("#" + hex)
+    rgb = tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+    output = Image.new('RGB', (50, 50), rgb)
+    with BytesIO() as imageBinary:
+        output.save(imageBinary, 'PNG')
+        imageBinary.seek(0)
+        await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
+
+@bot.command(brief="Returns the most used colors in an image", description="Returns the most used colors in an image.", aliases=["pal"])
+async def palette(ctx, num):
+    images = []
+    stops = []
+    res = requests.get(ctx.message.attachments[0].url)
+    image = Image.open(BytesIO(res.content)).convert('RGB')
+    cthief = ColorThief(BytesIO(res.content))
+    if int(num) == 1:
+        rgb = cthief.get_color(quality=1)
+        image = Image.new('RGB', (50, 50), rgb)
+        images.append(image)
+    elif int(num) == 2:
+        for i in range(1, 3):
+            rgb = cthief.get_color(quality=2)
+            image = Image.new('RGB', (50, 50), rgb)
+            images.append(image)
+    else:
+        palette = cthief.get_palette(color_count=int(num) - 1)
+        for rgb in palette:
+            image = Image.new('RGB', (50, 50), rgb)
+            images.append(image)
+    for i in range(100, 0, -1):
+        if len(images) >= i ** 2 and len(images) % i == 0:
+            height = i * 50
+            width = int(len(images) / i) * 50
+            for j in range(1, i):
+                stops.append(int(len(images) / i * j))
+            break
+    #print(str(width) + " , " + str(height))
+    output = Image.new('RGB', (width, height))
+    xOffset = 0
+    yOffset = 0
+    index = 0
+    for image in images:
+        for stop in stops:
+            if index == stop:
+                yOffset += 50
+                xOffset = 0
+        #print(str(xOffset) + " , " + str(yOffset))
+        output.paste(image, (xOffset, yOffset))
+        xOffset += image.size[0]
+        index += 1
+    with BytesIO() as imageBinary:
+        output.save(imageBinary, 'PNG')
+        imageBinary.seek(0)
+        await ctx.send(file=discord.File(fp=imageBinary, filename='image.png'))
 
 bot.run(auth.TOKEN)

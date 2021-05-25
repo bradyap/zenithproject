@@ -238,9 +238,10 @@ pickupLines = [
     "{name}. You may not be Jesus, but I'd still nail the heck out of you.",
     "{name}, I put the \"std\" in \"stud.\" The only thing I need now is \"u.\",",
     "Hey {name}, are you a stimulus check? Cause you stimulate me. ;)",
-    "Hey {name}, are you a roller coaster. Cause whenever I'm riding you, I never wanna start.",
+    "Hey {name}, are you a roller coaster. Cause whenever I'm riding you, I never wanna stop.",
     "Hey {name}, are you a roller coaster. Cause when I ride you, I'm always screaming.",
     "{name}: I'm no weatherman, but I can gaurantee that you'll be getting a few inches tonight.",
     "Hey {name}, are you my homework? Cause I wanna slam you against the table and do you all night long.",
     "{name}: there are 8 planets in our solar system, but there'll be 7 after I destroy Uranus.",
+    "Hey {name}, are you the Pfizer vaccine? Because I'm a minor and I want you in me.",
 ]

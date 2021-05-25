@@ -12,6 +12,7 @@ from discord.utils import get
 import subprocess
 from discord.ext.commands import CommandNotFound
 from discord import Member
+import asyncio
 
 #os path 
 abspath = os.path.abspath(__file__)
@@ -136,6 +137,7 @@ async def done(ctx, title):
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdDone: Permission denied ({ctx.message.author}).")
 
+'''
 spamCount = 0
 @bot.event
 async def on_message(message):
@@ -157,6 +159,7 @@ async def on_message(message):
     except:
         pass
     await bot.process_commands(message)
+'''
 
 def spamReset():
     global spamCount
@@ -215,31 +218,5 @@ async def driving(ctx):
         await ctx.send("You do not have permission to use this command.")
         print(f"cmdList: Permission denied ({ctx.message.author}).")
 
-@bot.command(hidden=True)
-async def hhs(ctx, *args):
-    print("cmdHHS")
-    input = " ".join(args[:])
-    if input == "2hr":
-        await ctx.send(file=discord.File("./images/hhs2hr.png"))
-    else:
-        await ctx.send(file=discord.File("./images/hhs.png"))
-    
-@bot.command(hidden=True)
-async def slhs(ctx, *args):
-    print("cmdSLHS")
-    input = " ".join(args[:])
-    if input == "2hr":
-        await ctx.send(file=discord.File("./images/slhs2hr.png"))
-    else:
-        await ctx.send(file=discord.File("./images/slhs.png"))
-
-@slash.slash(name="confess",guild_ids=[auth.mmr],description="Anonymous confessions. Type your confession following the command.")
-async def _confess(ctx, *confession):
-    input = ' '.join(confession[:])
-    channel = bot.get_channel(835149061576589362)
-    embed = discord.Embed(title="Anonymous Confession",description=input,color=0xffa5ea)
-    embed.timestamp = datetime.now()
-    await channel.send(embed=embed)
-    await ctx.send(hidden=True, content="Your confession has been sent to " + channel.mention + "!")
 
 bot.run(auth.TOKEN)
