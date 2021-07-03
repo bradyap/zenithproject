@@ -3,4 +3,4 @@ Use $help to see a list of commands.
 
 Visit [zenithproject.xyz](http://zenithproject.xyz) for more information.
 
-Written by Brady Pettengill (2020 - 2021).
+Written by Brady Pettengill (2020-2021).
