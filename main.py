@@ -1,16 +1,9 @@
 import os
 import discord
-import auth
-from discord.errors import HTTPException
+from auth import auth
 from discord.ext import commands
-from notion.client import NotionClient
-from threading import Timer
-import subprocess
-from datetime import datetime
 import discord_slash
-from discord_slash import SlashCommand, SlashContext
-from discord.utils import get
-import subprocess
+from discord_slash import SlashCommand
 from discord.ext.commands import CommandNotFound
 import asyncio
 
@@ -34,11 +27,6 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
     raise error
-
-@bot.command(hidden=True, brief="Returns bot state")
-async def info(ctx):
-    print(f"cmdInfo: Permission given ({ctx.message.author}).")
-    await ctx.send('Main logged in as {0} ({0.id})'.format(bot.user) + " from " + auth.env + ".")
 
 @bot.command(hidden=True)
 async def exec(ctx, *args):
