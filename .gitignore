@@ -1,1 +1,5 @@
+#folders
+/.vscode
+
+#file types
 *.code-workspace
