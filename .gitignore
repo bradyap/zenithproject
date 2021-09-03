@@ -1,5 +1,31 @@
-#folders
+#vscode
 /.vscode
 
-#file types
-*.code-workspace
+#py
+**__pycache__
+**logs
+
+#auth
+/config.json
+
+#utility
+/utility
+
+#bubblesproject
+/bubblesproject
+
+#legacy bot
+/zenithlegacy/temp
+/zenithlegacy/tts
+/zenithlegacy/auth
+/zenithlegacy/level2
+
+#lavalink
+/lavalink
+
+#confessions
+/zenithlegacy/confessBanned.json
+/zenithlegacy/mmrConfessionsBot.py
+
+#misc
+supervisor.py
