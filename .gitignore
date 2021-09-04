@@ -8,9 +8,6 @@
 #auth
 /config.json
 
-#utility
-/utility
-
 #bubblesproject
 /bubblesproject
 
@@ -29,3 +26,4 @@
 
 #misc
 supervisor.py
+deploy-commands.js
