@@ -13,14 +13,13 @@ module.exports = {
 		.addStringOption(option => option.setName("city").setDescription("City or locality."))
 		.addIntegerOption(option => option.setName("zip").setDescription("ZIP code.")),
 	async execute(interaction) {
-		if (interaction.options.getString("city")) {
+		if (interaction.options.getString("city")) { //if user inputs city
 			var locality = interaction.options.getString("city")
 			var url = `http://api.openweathermap.org/data/2.5/weather?q=${locality}&units=imperial&appid=${key}`
-		} else if (interaction.options.getInteger("zip")) {
-			var locality = interaction.options.getInteger("zip")
+		} else if (interaction.options.getInteger("zip")) { //if user inputs zip code
 			var url = `http://api.openweathermap.org/data/2.5/weather?zip=${locality}&units=imperial&appid=${key}`
 		} else {
-			return interaction.reply("Please enter a city or ZIP code.");
+			return interaction.reply("Please enter a city or ZIP code."); //if no args 
 		}
 		request(url, function (err, response, body) {
 			if(err){

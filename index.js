@@ -14,7 +14,7 @@ for (const file of commandFiles) {
 
 client.once("ready", () => {
 	console.log("Ready!")
-	//updatePermissions()
+	updatePermissions()
 }) 
 
 client.on("interactionCreate", async interaction => {
@@ -40,7 +40,7 @@ async function updatePermissions() {
 	await client.application?.fetch();
 
     //const command = await client.guilds.cache.get("760932362762059776")?.commands.fetch("882286487129964564");
-	const command = await client.application?.commands.fetch("882286487129964564")
+	const command = await client.application?.commands.fetch("883574506491351082")
 	const perms = [
         {
             id: "621056841606103042",
