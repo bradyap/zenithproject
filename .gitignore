@@ -1,5 +1,5 @@
 #vscode
-/.vscode
+**vscode
 
 #py
 **__pycache__
@@ -27,3 +27,4 @@
 #misc
 supervisor.py
 deploy-commands.js
+**cache
