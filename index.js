@@ -14,7 +14,6 @@ for (const file of commandFiles) {
 
 client.once("ready", () => {
 	console.log("Ready!")
-	updatePermissions()
 }) 
 
 client.on("interactionCreate", async interaction => {
@@ -33,31 +32,3 @@ client.on("interactionCreate", async interaction => {
 }) 
 
 client.login(token) 
-
-//update command permissions
-async function updatePermissions() {
-	
-	await client.application?.fetch();
-
-    //const command = await client.guilds.cache.get("760932362762059776")?.commands.fetch("882286487129964564");
-	const command = await client.application?.commands.fetch("883574506491351082")
-	const perms = [
-        {
-            id: "621056841606103042",
-            type: "USER",
-            permission: true,
-        },
-    ];
-	const guilds = client.guilds.cache.map(guild => guild.id);
-	for (const guild of guilds) {
-		try {
-			await command.permissions.set({ guild: guild, permissions: perms })
-		} catch (error) {
-			console.error(error)
-		}
-	}
-
-    //await command.permissions.add({ permissions });
-	
-	console.log(command)
-}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/weather.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:200,400">
+</head>
+
+<body>
+    <h1>zenithproject.xyz</h1>
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="commands.html">Bot commands</a>
+        <a href="webapps.html">Web apps</a>
+        <a href="contact.html">Contact us</a>
+    </div>
+    <script src="/js/require.js"></script>
+    <script type="text/javascript" src="/js/weather.js"></script>
+    <div class="container">
+        <fieldset>
+        <form name="weatherInput" id="weatherInput" onclick=getWeather()>
+            <input name="city" id="city" type="text" class="ghost-input" placeholder="Enter a city" required>
+            <input type="button" class="ghost-button" value="Get Weather">
+            <br>
+            <textarea id="output" name="output" rows="6" cols="80"></textarea>
+        </form>
+        </fieldset>
+    </div>
+</body>
+</html>

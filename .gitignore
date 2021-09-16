@@ -27,4 +27,5 @@
 #misc
 supervisor.py
 deploy-commands.js
+update-permissions.js
 **cache
