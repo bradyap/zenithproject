@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:200,400">
+</head>
+
+<body>
+    <h1>zenithproject.xyz</h1>
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="commands.html">Bot commands</a>
+        <a href="webapps.html">Web apps</a>
+        <a href="contact.html">Contact us</a>
+    </div>
+    <script type="text/javascript" src="/js/binary-utils.js"></script>
+    <div class="container">
+        <fieldset>
+            <h3></h3>Binary > Decimal</h3>
+            <form oninput="output.value = toDecimal()" id=binaryToDecimal>
+                <input type=number name=input>=
+                <output name=output for="input" form="binaryToDecimal">NaN</output>
+            </form>
+        </fieldset>
+        <fieldset>
+            <h3></h3>Decimal > Binary</h3>
+            <form oninput="output.value = toBinary()" id=decimalToBinary>
+                <input type=number name=input>=
+                <output name=output for="input" form="decimalToBinary">NaN</output>
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>

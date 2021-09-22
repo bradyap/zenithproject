@@ -1,0 +1,22 @@
+{
+  "name": "zenithproject",
+  "version": "1.0.0",
+  "description": "A multipurpose discord bot. Features music functionality, image processing, and miscellaneous other commands.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bradyap/zenithproject.git"
+  },
+  "author": "Brady Pettengill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bradyap/zenithproject/issues"
+  },
+  "homepage": "https://github.com/bradyap/zenithproject#readme",
+  "dependencies": {
+    "discord.js": "^13.1.0"
+  }
+}

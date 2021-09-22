@@ -1,0 +1,24 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "Website for Zenith discord bot and other various things.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bradyap/zenithproject.git"
+  },
+  "author": "Brady Pettengill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bradyap/zenithproject/issues"
+  },
+  "homepage": "https://github.com/bradyap/zenithproject#readme",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.17.1"
+  }
+}
