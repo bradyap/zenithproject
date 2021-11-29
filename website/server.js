@@ -6,7 +6,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //modules
-const weather = require("./modules/weather");
+const weather = require("./api/weather");
 
 app.get("/api/", (req, res) => {
     res.send("Available.")
