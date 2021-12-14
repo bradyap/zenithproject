@@ -3,7 +3,7 @@ from auth import auth
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 import os
-from discord_slash import SlashCommand
+#from discord_slash import SlashCommand
 from datetime import datetime
 import wavelink
 from pretty_help import DefaultMenu, PrettyHelp
@@ -18,7 +18,7 @@ os.chdir(dname)
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix="$", activity=discord.Activity(type=discord.ActivityType.listening, name="music | $help"), intents=intents)
-cogs = ["cogs.Utility", "cogs.Images", "cogs.Content", "cogs.Admin", "cogs.Music", "cogs.Miscellaneous", "cogs.Confessions", "cogs.Roles", "cogs.Interactions"]
+cogs = ["cogs.Utility", "cogs.Images", "cogs.Admin", "cogs.Miscellaneous", "cogs.Roles", "cogs.Interactions"] #content and music down rn 
 for cog in cogs:
     bot.load_extension(cog)
 

@@ -1,26 +1,13 @@
 const express = require("express");
+const path = require("path")
 
 const app = express()
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//modules
-const weather = require("./api/weather");
-
-app.get("/api/", (req, res) => {
-    res.send("Available.")
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "./html/index.html"))
 });
 
-app.get("/api/weather/", (req, res) => {
-    var locality = req.query.locality
-    weather.getWeather(locality)
-        .then(response => {
-            res.send(response.data)
-        })
-        .catch(error => {
-            res.send(error.message)
-        })
-});
-
-app.listen(3000, () => console.log("Listening.."))
+app.listen(3030, () => console.log("Listening.."))
