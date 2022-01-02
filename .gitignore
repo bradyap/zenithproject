@@ -11,9 +11,6 @@
 #auth
 /config.json
 
-#bubblesproject
-/bubblesproject
-
 #legacy bot
 /zenithlegacy/temp
 /zenithlegacy/tts
@@ -23,12 +20,5 @@
 #lavalink
 /lavalink
 
-#confessions
-/zenithlegacy/confessBanned.json
-/zenithlegacy/mmrConfessionsBot.py
-
 #misc
-supervisor.py
-deploy-commands.js
-update-permissions.js
 **cache
