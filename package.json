@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/bradyap/zenithproject#readme",
   "dependencies": {
-    "discord.js": "^13.1.0"
+    "discord.js": "^13.1.0",
+    "request": "^2.88.2"
   }
 }

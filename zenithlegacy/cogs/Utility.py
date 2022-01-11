@@ -39,7 +39,7 @@ class Utility(commands.Cog, description="Various utilities"):
         await ctx.send(res)
 
     @commands.command(brief="Picks a random choice from a list of inputs separated by commas", description="Picks a random choice from a list of inputs separated by commas.")
-    async def randomchoice(self, ctx, *args):
+    async def choose(self, ctx, *args):
         choices = ' '.join(args[:]).split(',')
         res = random.choice(choices)
         await ctx.send(res)

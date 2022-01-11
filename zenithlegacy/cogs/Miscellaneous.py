@@ -36,13 +36,13 @@ class Miscellaneous(commands.Cog, description="Uncategorized commands"):
         for emote in emotes:
             await msg[1].add_reaction(emote)
                 
-    '''@commands.Cog.listener()
+    @commands.Cog.listener()
     async def on_message(self, message):
         if message.content == "?":
             emotes = ['👍', '👎']
             msg = await message.channel.history(limit=1).flatten()
             for emote in emotes:
-                await msg[0].add_reaction(emote)'''
+                await msg[0].add_reaction(emote)
 
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))

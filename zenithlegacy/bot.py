@@ -18,7 +18,7 @@ os.chdir(dname)
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix="$", activity=discord.Activity(type=discord.ActivityType.listening, name="music | $help"), intents=intents)
-cogs = ["cogs.Utility", "cogs.Images", "cogs.Admin", "cogs.Miscellaneous", "cogs.Roles", "cogs.Interactions"] #content and music down rn 
+cogs = ["cogs.Utility", "cogs.Images", "cogs.Admin", "cogs.Miscellaneous", "cogs.Roles", "cogs.Interactions", "cogs.Music"] #content down rn 
 for cog in cogs:
     bot.load_extension(cog)
 
