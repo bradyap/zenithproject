@@ -22,11 +22,13 @@ class Miscellaneous(commands.Cog, description="Uncategorized commands"):
                 await ctx.send(file=discord.File("../content/hhs2hr.png"))
             else:
                 await ctx.send(file=discord.File("../content/hhs.png"))
-        if school == "slhs" or school == "SLHS":
+        elif school == "slhs" or school == "SLHS":
             if input == "2hr" or input == "early release":
                 await ctx.send(file=discord.File("../content/slhs2hr.png"))
             else:
                 await ctx.send(file=discord.File("../content/slhs.png"))
+        elif school == "temp":
+            await ctx.send(file=discord.File("../content/temp.png"))
     
     @commands.command(brief="Adds vote to previous message", description="Adds vote to previous message.")
     async def poll(self, ctx):
