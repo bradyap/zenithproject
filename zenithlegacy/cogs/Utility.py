@@ -42,6 +42,7 @@ async def getNextOccurance(targetDate, targetTime):
 async def remindObject(bot, mid, dateString):
     date = datetime.fromisoformat(dateString)
     est = pytz.timezone('US/Eastern')
+    date = date.astimezone(est)
     delta = date - datetime.now().astimezone(est)
     
     await asyncio.sleep(delta.total_seconds())
