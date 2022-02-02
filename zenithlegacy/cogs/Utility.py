@@ -44,8 +44,9 @@ async def remindObject(bot, mid, dateString):
     est = pytz.timezone('US/Eastern')
     date = date.astimezone(est)
     delta = date - datetime.now().astimezone(est)
+    #print(date.isoformat() + " secs " + str(delta.seconds) + " total secs")
     
-    await asyncio.sleep(delta.total_seconds())
+    await asyncio.sleep(delta.seconds)
     #await asyncio.sleep(5)
     
     filename = "../temp/reminders.json"
@@ -72,11 +73,11 @@ async def loadReminds(bot):
     with open (filename) as f:
         data = json.load(f)
     for mid in data:
-        await remindObject(bot, mid, data[mid]["date"])
-    
+        asyncio.ensure_future(remindObject(bot, mid, data[mid]["date"]))
 class Utility(commands.Cog, description="Various utilities"):
     def __init__(self, bot):
         self.bot = bot
+        
         self.bot.loop.create_task(loadReminds(self.bot))
         
     @commands.command(brief="Returns mentioned user's id", description="Returns mentioned user's id. Defaults to message author.")
