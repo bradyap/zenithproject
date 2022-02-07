@@ -159,7 +159,7 @@ class Utility(commands.Cog, description="Various utilities"):
         with open (filename) as f:
             data = json.load(f)
             
-        reminders = {}
+        '''reminders = {}
         for mid in data:
             if data[mid]["uid"] == ctx.message.author.id:
                 date = datetime.fromisoformat(data[mid]["date"])
@@ -173,7 +173,18 @@ class Utility(commands.Cog, description="Various utilities"):
         i = 0
         for date, name in reminders:
             out += "\n" + str(i + 1) + ") " + name + " --> " + date.strftime("%m-%d | %H:%M")
-            i += 1
+            i += 1'''
+            
+        out = "```yaml\nYour Reminders:"
+        i = 0
+        for mid in data:
+            if data[mid]["uid"] == ctx.message.author.id:
+                date = datetime.fromisoformat(data[mid]["date"])
+                est = pytz.timezone('US/Eastern')
+                date.astimezone(est)
+                out += "\n" + str(i + 1) + ") " + data[mid]["name"] + " --> " + date.strftime("%m-%d | %H:%M")
+                i += 1
+        
         await ctx.send(out + "```")
         
     @commands.command(brief="Deletes current reminders for your user", description="Deletes current reminders for your user.", aliases=["rr"]) 
